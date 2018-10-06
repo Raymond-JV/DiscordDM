@@ -43,7 +43,7 @@ public class DragonClaws extends WeaponComponent {
                         for (int i : particle)
                             sum += i;
 
-                        String message = String.format("Dragon claws slashed for %d %d %d %d!", particle[0], particle[1], particle[2], particle[3]);
+                        String message = String.format("Dragon claws slashed for %d-%d-%d-%d!", particle[0], particle[1], particle[2], particle[3]);
 
                         return result.setDamage(sum).setMessage(message);
                     }

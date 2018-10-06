@@ -5,20 +5,22 @@ import java.util.List;
 public class Player {
 
     private static int MAX_HEALTH = 99;
+    private static int MIN_HEALTH = 0;
     private static int MAX_SPEC = 100;
+    private static int MIN_SPEC = 0;
+
     boolean alive = true;
     private List<Condition> playerConditions;
     private int health = MAX_HEALTH;
     private int spec = MAX_SPEC;
     private Account playerAccount;
 
-
     public Player(Account playerAccount) {
         this.playerAccount = playerAccount;
     }
 
     public void applyDamage(int damage) {
-        health -= damage;
+        health = Math.max(health - damage, MIN_HEALTH);
         if (health <= 0)
             alive = false;
     }
@@ -56,5 +58,4 @@ public class Player {
     public Account getPlayerAccount() {
         return playerAccount;
     }
-
 }
