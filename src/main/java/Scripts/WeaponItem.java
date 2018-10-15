@@ -1,3 +1,5 @@
+package Scripts;
+
 public enum WeaponItem {
     ABBYSAL_WHIP("Abbysal Whip", 0, 42, 0, 0.7, "whip"),
     ARMADYL_GODSWORD("Armadyl Godsword", 70_0000_000, 75, 50, 0.8, "ags"),

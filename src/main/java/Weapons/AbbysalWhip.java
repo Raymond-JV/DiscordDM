@@ -8,10 +8,13 @@ public class AbbysalWhip extends WeaponComponent {
     private String quickCode = "whip";
     private double accuracy = 0.7;
     private int maxHit = 35;
-    private int spec;
+    private int spec = 0;
 
     public AbbysalWhip() {
-        AttackStats whipSlash = new AttackStats().setAccuracy(accuracy).setMax(maxHit);
+        WeaponAttributesBuilder whipBuilder = new WeaponAttributesBuilder();
+        whipBuilder.accuracy(accuracy).maxHit(maxHit).quickCode(quickCode).spec(spec);
+        WeaponAttributes whipSlash = whipBuilder.build();
+
         this.addAttack(quickCode, new Attack(whipSlash) {
             @Override
             public AttackResultContext attack() {

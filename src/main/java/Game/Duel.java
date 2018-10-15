@@ -3,12 +3,15 @@ package Game;
 import Weapons.AttackResultContext;
 import Weapons.UnlockedAttacks;
 
+
 public class Duel {
 
     private Player currentPlayer;
     private Player nextPlayer;
     private Player winner = null;
     private Player loser = null;
+
+    private StringBuilder result = new StringBuilder();
 
     public Duel(Player currentPlayer, Player nextPlayer) {
         this.currentPlayer = currentPlayer;
@@ -18,9 +21,7 @@ public class Duel {
 
     private void shuffleOrder() {
         if (RandomHelper.range(0, 2) == 0) {
-            Player tmp = currentPlayer;
-            currentPlayer = nextPlayer;
-            nextPlayer = tmp;
+            swap();
         }
     }
 
@@ -30,19 +31,28 @@ public class Duel {
         nextPlayer = tmp;
     }
 
-    public void processTurn(MessageContext message) {
+    //Only processes turn of current player
+    public boolean processTurn(MessageContext message) {
         if (!message.verifySender(currentPlayer.getPlayerAccount()))
-            return;
+            return false;
         processCommand(message);
+        return true;
     }
 
-    public void processCommand(MessageContext message) {
+    private void processCommand(MessageContext message) {
         switch (message.getMessage()) {
+            case "list":
+                result.append("Available Attacks:");
+                UnlockedAttacks availableAttacks = currentPlayer.getPlayerAccount().getUnlocks().getAvailableAttacks();
+                for (String attackCode : availableAttacks.getAvailableAttacks()) {
+                    result.append(attackCode);
+                }
+                break;
             case "help":
-                System.out.println("Help stub!");
+                result.append("Help Stub!");
                 break;
             case "shop":
-                System.out.println("Shop stub!");
+                result.append("Shop Stub!");
                 break;
             default:
                 processAttack(message);
@@ -52,28 +62,26 @@ public class Duel {
 
     private void processAttack(MessageContext message) {
         Account user = currentPlayer.getPlayerAccount();
-        UnlockedAttacks userAttacks = user.getAvailableAttacks();
+        UnlockedAttacks userAttacks = user.getUnlocks().getAvailableAttacks();
         String command = message.getMessage();
 
         if (userAttacks.hasAttack(command)) {
             AttackResultContext damage = userAttacks.attack(command);
             System.out.println(damage.getMessage());
             nextPlayer.applyDamage(damage.getDamage());
-            System.out.printf("(INFO)%n%s %d hp%n%s %dhp%n", currentPlayer.getUserName(), currentPlayer.getHealth(), nextPlayer.getUserName(), nextPlayer.getHealth());
-
-            if (duelOver()) {
+            result.append(String.format("(INFO)%n%s %d hp%n%s %dhp%n", currentPlayer.getUserName(), currentPlayer.getHealth(), nextPlayer.getUserName(), nextPlayer.getHealth()));
+            if (finished()) {
                 processHistory();
-                System.out.printf("%s has won the game!%n", winner.getUserName());
+                result.append(String.format("%s has won the game!%n", winner.getUserName()));
             }
             swap();
         } else {
-            //ADD WEAPON CHECKING
-            System.out.printf("Unknown command: [%s]", command);
+            result.append(String.format("Unknown command: \"%s\"%n", command));
+            result.append("Type 'attack' to list available moves");
         }
-
     }
 
-    public boolean duelOver() {
+    public boolean finished() {
         //The player of the current turn is prioritized for winning, similar to the mechanics of dueling in Runescape.
         // i.e. ties are not allowed
         if (!nextPlayer.isAlive()) {
@@ -86,10 +94,13 @@ public class Duel {
         return winner != null;
     }
 
-    public void info() {
-        System.out.printf("Current user: %s, Next User: %s%n", currentPlayer.getUserName(), nextPlayer.getUserName());
+    public String getResult() {
+        return this.result.toString();
     }
 
+    public String status() {
+        return String.format("Current turn: %s%n", currentPlayer.getUserName());
+    }
 
     private void processHistory() {
         DuelHistory winnerHistory = winner.getPlayerAccount().getRecordedGames();

@@ -1,17 +1,20 @@
 package Game;
 
-import Weapons.AttackResultContext;
-import Weapons.DragonClaws;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 public class Init {
 
     public static void main(String[] args) {
 
-        DragonClaws d = new DragonClaws();
-        AttackResultContext dclawAttack = d.attack("dclaw");
-        System.out.println(dclawAttack.getDamage());
-        System.out.println(dclawAttack.getMessage());
+        try (BufferedReader in = new BufferedReader(
+                new InputStreamReader(Init.class.getResourceAsStream("drop_table.txt")))) {
 
-
+            System.out.println(in.readLine());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

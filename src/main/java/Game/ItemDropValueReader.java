@@ -36,8 +36,7 @@ public class ItemDropValueReader {
         Gson gson = new Gson();
         for (JsonElement currentItem : commonsList) {
             JsonObject itemInfo = currentItem.getAsJsonObject();
-            Item i = gson.fromJson(itemInfo, Item.class);
-            System.out.println(i.info());
+            commons.add(gson.fromJson(itemInfo, Item.class));
         }
     }
 

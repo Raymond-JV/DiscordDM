@@ -1,13 +1,12 @@
 package Game;
 
-import Weapons.UnlockedAttacks;
 
 public class Account {
 
     private DuelHistory recordedGames = new DuelHistory();
     private String snowFlakeId = "coffee"; //#TEMPERARY PLACEHOLDER
     private String userName;
-    private UnlockedAttacks availableAttacks = new UnlockedAttacks();
+    private Supplies unlocks = new Supplies();
 
     //temp constructor
 
@@ -23,8 +22,8 @@ public class Account {
         return this.userName;
     }
 
-    public UnlockedAttacks getAvailableAttacks() {
-        return availableAttacks;
+    public Supplies getUnlocks() {
+        return this.unlocks;
     }
 
     public DuelHistory getRecordedGames() {

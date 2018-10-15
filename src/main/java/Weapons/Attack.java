@@ -4,9 +4,9 @@ import java.util.Random;
 
 public abstract class Attack {
 
-    private AttackStats attackStats;
+    private WeaponAttributes attackStats;
 
-    public Attack(AttackStats attackStats) {
+    public Attack(WeaponAttributes attackStats) {
         this.attackStats = attackStats;
     }
 
@@ -16,5 +16,4 @@ public abstract class Attack {
         Random seed = new Random();
         return seed.nextDouble() <= attackStats.getAccuracy();
     }
-
 }

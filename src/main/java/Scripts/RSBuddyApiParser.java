@@ -1,7 +1,7 @@
+package Scripts;
 
 import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
 
 import java.io.*;
 import java.math.BigInteger;
@@ -12,13 +12,16 @@ import java.util.*;
 
 public class RSBuddyApiParser {
 
-    private static String outputFile = "drop_table.txt";
+    private static String outputFile = "src/main/drop_table.txt";
     private static String apiFileName = "RSBuddyItemDump.json";
     private static Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 
     private static Map<String, Integer> priceGuide = new HashMap<>();
 
     public static void main(String[] args) {
+        BufferedReader in = new BufferedReader(new InputStreamReader(RSBuddyApiParser.class.getClassLoader().getResourceAsStream("drop_table.txt")));
+        in.lines().forEach(System.out::println);
+
         parseApiDumpIntoMap();
         writeJson(createWeaponsJsonObject(), createCommonsJsonObject());
 
@@ -37,7 +40,8 @@ public class RSBuddyApiParser {
     }
 
     private static void parseApiDumpIntoMap() {
-        JsonReader reader = gson.newJsonReader(new InputStreamReader(RSBuddyApiParser.class.getResourceAsStream(apiFileName)));
+        JsonReader reader = gson.newJsonReader(
+                new InputStreamReader(RSBuddyApiParser.class.getClassLoader().getResourceAsStream(apiFileName)));
         JsonParser parser = new JsonParser();
         JsonElement data = parser.parse(reader);
         JsonObject itemMap = data.getAsJsonObject();

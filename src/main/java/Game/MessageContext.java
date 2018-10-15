@@ -14,6 +14,6 @@ public class MessageContext {
     }
 
     public boolean verifySender(Account toVerify) {
-        return toVerify.getSnowFlakeId() == author.getSnowFlakeId();
+        return toVerify.getSnowFlakeId().equals(author.getSnowFlakeId());
     }
 }
