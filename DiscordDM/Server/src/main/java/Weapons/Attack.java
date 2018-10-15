@@ -4,9 +4,9 @@ import java.util.Random;
 
 public abstract class Attack {
 
-    private AttackAttributes attackStats;
+    private WeaponAttributes attackStats;
 
-    public Attack(AttackAttributes attackStats) {
+    public Attack(WeaponAttributes attackStats) {
         this.attackStats = attackStats;
     }
 

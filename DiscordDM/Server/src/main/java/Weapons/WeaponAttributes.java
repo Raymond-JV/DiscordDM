@@ -1,20 +1,20 @@
 package Weapons;
 
-public class AttackAttributes {
+public class WeaponAttributes {
 
     private String quickCode;
     private double accuracy;
     private int maxHit;
     private int spec;
 
-    public AttackAttributes() {
+    public WeaponAttributes() {
     }
 
     public String getQuickCode() {
         return quickCode;
     }
 
-    public AttackAttributes setQuickCode(String quickCode) {
+    public WeaponAttributes setQuickCode(String quickCode) {
         this.quickCode = quickCode;
         return this;
     }
@@ -23,7 +23,7 @@ public class AttackAttributes {
         return accuracy;
     }
 
-    public AttackAttributes setAccuracy(double accuracy) {
+    public WeaponAttributes setAccuracy(double accuracy) {
         this.accuracy = accuracy;
         return this;
     }
@@ -32,7 +32,7 @@ public class AttackAttributes {
         return maxHit;
     }
 
-    public AttackAttributes setMaxHit(int maxHit) {
+    public WeaponAttributes setMaxHit(int maxHit) {
         this.maxHit = maxHit;
         return this;
     }
@@ -41,7 +41,7 @@ public class AttackAttributes {
         return spec;
     }
 
-    public AttackAttributes setSpec(int spec) {
+    public WeaponAttributes setSpec(int spec) {
         this.spec = spec;
         return this;
     }

@@ -11,9 +11,9 @@ public class AbbysalWhip extends WeaponComponent {
     private int spec = 0;
 
     public AbbysalWhip() {
-        AttackAttributesBuilder whipBuilder = new AttackAttributesBuilder();
+        WeaponAttributesBuilder whipBuilder = new WeaponAttributesBuilder();
         whipBuilder.accuracy(accuracy).maxHit(maxHit).quickCode(quickCode).spec(spec);
-        AttackAttributes whipSlash = whipBuilder.build();
+        WeaponAttributes whipSlash = whipBuilder.build();
 
         this.addAttack(quickCode, new Attack(whipSlash) {
             @Override

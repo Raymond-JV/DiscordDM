@@ -5,8 +5,8 @@ import java.util.Random;
 public class DragonClaws extends WeaponComponent {
 
 
-    private AttackAttributesBuilder clawBuilder = new AttackAttributesBuilder().quickCode("dclaw").maxHit(35).accuracy(0.6).spec(50);
-    AttackAttributes claw = clawBuilder.build();
+    private WeaponAttributesBuilder clawBuilder = new WeaponAttributesBuilder().quickCode("dclaw").maxHit(35).accuracy(0.6).spec(50);
+    WeaponAttributes claw = clawBuilder.build();
 
     private int particle[] = new int[4];
 

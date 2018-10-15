@@ -1,5 +1,7 @@
 package Weapons;
 
+import Game.ItemDropValueReader;
+
 import java.lang.reflect.InvocationTargetException;
 
 public enum WeaponComponentFactory {
@@ -7,10 +9,8 @@ public enum WeaponComponentFactory {
     DRAGON_CLAWS(DragonClaws.class),
     ABBYSAL_WHIP(AbbysalWhip.class);
 
-
     private Class<? extends WeaponComponent> clazz;
     private static String blacklist[] = {"\\s", "_"};
-
 
     WeaponComponentFactory(Class<? extends WeaponComponent> clazz) {
         this.clazz = clazz;
