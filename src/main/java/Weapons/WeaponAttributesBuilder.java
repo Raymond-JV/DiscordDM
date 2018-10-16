@@ -8,8 +8,10 @@ public class WeaponAttributesBuilder {
     public WeaponAttributesBuilder() {
     }
 
-    public WeaponAttributesBuilder quickCode(String quickCode) {
-        this.toBuild.setQuickCode(quickCode);
+
+    public WeaponAttributesBuilder quickCode(String ... quickCode) {
+        for (String code: quickCode)
+            toBuild.addQuickCode(code);
         return this;
     }
 

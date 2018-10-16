@@ -8,7 +8,7 @@ import java.math.BigInteger;
 import java.util.*;
 
 //This script reads the RSBuddy api item dump and creates an appropriate json data set.
-//The names and prices of interesting items are recorded to be used in Discord DM's drop system.
+//The names and prices of interesting items are recorded to be used in DiscordDM's drop system.
 
 public class RSBuddyApiParser {
 
@@ -19,8 +19,6 @@ public class RSBuddyApiParser {
     private static Map<String, Integer> priceGuide = new HashMap<>();
 
     public static void main(String[] args) {
-        BufferedReader in = new BufferedReader(new InputStreamReader(RSBuddyApiParser.class.getClassLoader().getResourceAsStream("drop_table.txt")));
-        in.lines().forEach(System.out::println);
 
         parseApiDumpIntoMap();
         writeJson(createWeaponsJsonObject(), createCommonsJsonObject());
@@ -76,6 +74,7 @@ public class RSBuddyApiParser {
             info.addProperty("name", w.name.toLowerCase());
             info.addProperty("price", w.price);
             info.addProperty("maxHit", w.maxHit);
+            info.addProperty("accuracy", w.accuracy);
             info.addProperty("spec", w.spec);
             JsonArray codes = new JsonArray();
             for (String code : w.quickCodes) {

@@ -5,6 +5,7 @@
         "name": "abbysal whip",
         "price": 0,
         "maxHit": 42,
+        "accuracy": 0.7,
         "spec": 0,
         "quickCodes": [
           "whip"
@@ -14,6 +15,7 @@
         "name": "armadyl godsword",
         "price": 700000000,
         "maxHit": 75,
+        "accuracy": 0.8,
         "spec": 50,
         "quickCodes": [
           "ags"
@@ -23,6 +25,7 @@
         "name": "bandos godsword",
         "price": 30000000,
         "maxHit": 70,
+        "accuracy": 0.8,
         "spec": 50,
         "quickCodes": [
           "bgs"
@@ -32,6 +35,7 @@
         "name": "dragon claws",
         "price": 100000000,
         "maxHit": 35,
+        "accuracy": 0.6,
         "spec": 50,
         "quickCodes": [
           "dclaw"
@@ -41,6 +45,7 @@
         "name": "zamorak godsword",
         "price": 30000000,
         "maxHit": 54,
+        "accuracy": 0.75,
         "spec": 50,
         "quickCodes": [
           "zgs"

@@ -10,10 +10,9 @@ public class DragonClaws extends WeaponComponent {
 
     private int particle[] = new int[4];
 
-    public DragonClaws() {
-        super("Dragon Claws", 10000);
-
-        this.addAttack(claw.getQuickCode(),
+    public DragonClaws(String name, int value) {
+        super(name, value);
+        this.addAttack(claw.getQuickCodes().get(0),
                 new Attack(claw) {
                     @Override
                     public AttackResultContext attack() {
@@ -51,9 +50,5 @@ public class DragonClaws extends WeaponComponent {
     private void resetAttack() {
         for (int i = 0; i < particle.length; i++)
             particle[i] = 0;
-    }
-
-    public static DragonClaws create() {
-        return new DragonClaws();
     }
 }

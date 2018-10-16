@@ -2,6 +2,7 @@ package Weapons;
 
 import java.util.Random;
 
+
 public class AbbysalWhip extends WeaponComponent {
 
     private String attackDescription;
