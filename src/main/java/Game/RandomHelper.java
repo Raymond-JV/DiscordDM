@@ -16,4 +16,13 @@ public class RandomHelper {
             return seed.nextInt(max - min) + min;
         }
     }
+
+    public static double range(double min, double max)
+    {
+        if (min > max) {
+            throw new RuntimeException("Are you serious lol. Min > Max in RandomHelper.range()");
+        } else {
+            return seed.nextDouble() * max + min;
+        }
+    }
 }

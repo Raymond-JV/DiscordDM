@@ -11,6 +11,7 @@ public class DragonClaws extends WeaponComponent {
     private int particle[] = new int[4];
 
     public DragonClaws() {
+        super("Dragon Claws", 10000);
 
         this.addAttack(claw.getQuickCode(),
                 new Attack(claw) {

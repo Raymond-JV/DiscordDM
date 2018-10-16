@@ -16,6 +16,7 @@ public class Duel {
     public Duel(Player currentPlayer, Player nextPlayer) {
         this.currentPlayer = currentPlayer;
         this.nextPlayer = nextPlayer;
+        result = new StringBuilder();
         shuffleOrder();
     }
 

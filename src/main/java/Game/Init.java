@@ -1,20 +1,33 @@
 package Game;
 
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Init {
 
-    public static void main(String[] args) {
+    private static String itemDump = "drop_table.txt";
+    public static void main(String[] args) throws InterruptedException {
 
-        try (BufferedReader in = new BufferedReader(
-                new InputStreamReader(Init.class.getResourceAsStream("drop_table.txt")))) {
+       ItemDropValueReader itemParser = new ItemDropValueReader(itemDump);
+       DropTable duelRewards = new DropTable(itemParser.getCommons(), 0.9);
+       DropTable rareDrop = new DropTable(itemParser.getWeapons(), 1);
+       duelRewards.addDropTable(rareDrop);
 
-            System.out.println(in.readLine());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+
+         Set<String> spawnedItems = new HashSet<>();
+         int i = 0;
+       while (true)
+       {
+           Item spawnedItem = duelRewards.spawn();
+           System.out.println(spawnedItem.info() + " num: " + i++);
+           spawnedItems.add(spawnedItem.getName());
+           Thread.sleep(1);
+           if (spawnedItems.size() == (itemParser.getCommons().size() + itemParser.getWeapons().size()))
+               break;
+       }
+        System.out.println("all items spawned correctly");
+
     }
 }
