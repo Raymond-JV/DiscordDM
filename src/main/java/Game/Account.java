@@ -1,39 +1,28 @@
 package Game;
 
 
+import Game.Battle.Player;
+
 public class Account {
 
-    private DuelHistory recordedGames = new DuelHistory();
-    private String snowFlakeId = "coffee"; //#TEMPERARY PLACEHOLDER
-    private String userName;
-    private Supplies unlocks = new Supplies();
 
-    //temp constructor
+    private String snowFlakeId = "coffee"; //#TODO TEMPORARY PLACEHOLDER
+    private Player player;
 
-    public Account(String userName) {
-        this.userName = userName;
+
+    public Account(String snowFlakeId) {
+        this.snowFlakeId = snowFlakeId;
     }
 
     public String getSnowFlakeId() {
         return this.snowFlakeId;
     }
 
-    public String getUserName() {
-        return this.userName;
+    public Player getPlayer() {
+        return player;
     }
 
-    public Supplies getUnlocks() {
-        return this.unlocks;
+    public void setPlayer(Player player) {
+        this.player = player;
     }
-
-    public DuelHistory getRecordedGames() {
-        return recordedGames;
-    }
-
-    @Override
-    public String toString() {
-        return String.format("Account: SnowflakeId: %s, Username: %s", snowFlakeId, userName);
-    }
-
-
 }

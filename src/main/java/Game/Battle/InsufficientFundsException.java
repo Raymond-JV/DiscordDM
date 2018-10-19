@@ -1,4 +1,4 @@
-package Game;
+package Game.Battle;
 
 public class InsufficientFundsException extends Exception {
     public InsufficientFundsException(String error) {

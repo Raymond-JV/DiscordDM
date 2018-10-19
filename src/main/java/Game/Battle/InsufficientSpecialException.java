@@ -1,4 +1,4 @@
-package Game;
+package Game.Battle;
 
 public class InsufficientSpecialException extends Exception {
 

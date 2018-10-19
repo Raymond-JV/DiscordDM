@@ -2,13 +2,20 @@ package Game;
 
 
 
-import Weapons.UnlockedAttacks;
+import Game.Battle.InsufficientFundsException;
+import Game.Combat.Attack;
+import Game.Combat.WeaponComponent;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class Supplies {
     private BigInteger gold = BigInteger.valueOf(0);
-    private UnlockedAttacks availableAttacks = new UnlockedAttacks();
+    //#TODO convert to hashmap, use quickcodes of each weapon as a multi or key
+    private List<WeaponComponent> weapons = new ArrayList<>();
+    //private UnlockedAttacks availableAttacks = new UnlockedAttacks();
 
     public Supplies()
     {}
@@ -26,14 +33,29 @@ public class Supplies {
             gold = difference;
         }
     }
-
+    public boolean hasGold(int value)
+    {
+        return gold.compareTo(BigInteger.valueOf(value)) >= 0;
+    }
     public BigInteger getGold()
     {
         return gold;
     }
 
-    public UnlockedAttacks getAvailableAttacks() {
-        return availableAttacks;
+
+    public Attack getAttack(String code)
+    {
+        for (WeaponComponent weapon : weapons)
+        {
+            Map<String, Attack> attackList = weapon.getAttackList();
+            if (attackList.containsKey(code))
+                return attackList.get(code);
+        }
+        return null;
+    }
+
+    public List<WeaponComponent> getWeapons() {
+        return weapons;
     }
 
 

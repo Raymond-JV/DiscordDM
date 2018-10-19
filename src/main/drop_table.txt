@@ -1,57 +1,5 @@
 {
   "items": {
-    "weapons": [
-      {
-        "name": "abbysal whip",
-        "value": 0,
-        "maxHit": 42,
-        "accuracy": 0.7,
-        "spec": 0,
-        "quickCodes": [
-          "whip"
-        ]
-      },
-      {
-        "name": "armadyl godsword",
-        "value": 700000000,
-        "maxHit": 75,
-        "accuracy": 0.8,
-        "spec": 50,
-        "quickCodes": [
-          "ags"
-        ]
-      },
-      {
-        "name": "bandos godsword",
-        "value": 30000000,
-        "maxHit": 70,
-        "accuracy": 0.8,
-        "spec": 50,
-        "quickCodes": [
-          "bgs"
-        ]
-      },
-      {
-        "name": "dragon claws",
-        "value": 100000000,
-        "maxHit": 35,
-        "accuracy": 0.6,
-        "spec": 50,
-        "quickCodes": [
-          "dclaw"
-        ]
-      },
-      {
-        "name": "zamorak godsword",
-        "value": 30000000,
-        "maxHit": 54,
-        "accuracy": 0.75,
-        "spec": 50,
-        "quickCodes": [
-          "zgs"
-        ]
-      }
-    ],
     "commons": [
       {
         "name": "torture ornament kit",

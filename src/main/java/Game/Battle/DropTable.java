@@ -1,4 +1,7 @@
-package Game;
+package Game.Battle;
+
+import Game.Item;
+import Game.RandomHelper;
 
 import java.util.List;
 

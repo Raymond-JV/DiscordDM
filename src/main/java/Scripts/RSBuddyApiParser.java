@@ -21,17 +21,13 @@ public class RSBuddyApiParser {
     public static void main(String[] args) {
 
         parseApiDumpIntoMap();
-        writeJson(createWeaponsJsonObject(), createCommonsJsonObject());
+        writeJson(createCommonsJsonObject());
 
         System.out.printf("Parsing dump: '%s'...%n%n", apiFileName);
         BigInteger sum = BigInteger.valueOf(0);
         for (Integer i : priceGuide.values()) {
             sum = sum.add(BigInteger.valueOf(i));
         }
-
-
-        System.out.printf("Common Items: %d, Average Price: %f%nWeapon Count: %d%n", priceGuide.size(),
-                sum.doubleValue() / priceGuide.size(), WeaponItem.values().length);
 
         System.out.printf("%nDrop Table successfully written as '%s'", outputFile);
 
@@ -61,29 +57,6 @@ public class RSBuddyApiParser {
                 priceGuide.put(currentName, currentPrice);
         }
 
-        //Weapon drops are handled in the weapons drop table
-        for (WeaponItem w : WeaponItem.values()) {
-            priceGuide.remove(w.name.toLowerCase());
-        }
-    }
-
-    private static JsonArray createWeaponsJsonObject() {
-        JsonArray weaponList = new JsonArray();
-        for (WeaponItem w : WeaponItem.values()) {
-            JsonObject info = new JsonObject();
-            info.addProperty("name", w.name.toLowerCase());
-            info.addProperty("price", w.price);
-            info.addProperty("maxHit", w.maxHit);
-            info.addProperty("accuracy", w.accuracy);
-            info.addProperty("spec", w.spec);
-            JsonArray codes = new JsonArray();
-            for (String code : w.quickCodes) {
-                codes.add(code);
-            }
-            info.add("quickCodes", codes);
-            weaponList.add(info);
-        }
-        return weaponList;
     }
 
     private static JsonArray createCommonsJsonObject() {
@@ -98,11 +71,9 @@ public class RSBuddyApiParser {
         return commonList;
     }
 
-    private static void writeJson(JsonArray weapons, JsonArray commons) {
+    private static void writeJson(JsonArray commons) {
 
         JsonObject itemLists = new JsonObject();
-        itemLists.add("weapons", weapons);
-
         itemLists.add("commons", commons);
         JsonObject items = new JsonObject();
         items.add("items", itemLists);

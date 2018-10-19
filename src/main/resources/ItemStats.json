@@ -2,53 +2,84 @@
   "items": {
     "weapons": [
       {
-        "name": "abbysal whip",
+        "name": "Armadyl Godsword",
+        "value": 30000000,
+        "attack": [
+          {
+            "code": [
+              "ags",
+              "ogs",
+              "armadyl godsword"
+            ],
+            "maxHit": 70,
+            "spec": 50,
+            "accuracy": 0.7,
+            "type": "MELEE",
+            "message": [
+              "%s whirls the ags and slashes for %s!"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Granite Maul",
+        "value": 10000000,
+        "attack": [
+          {
+            "code": [
+              "gmaul",
+              "granite maul",
+              "maul"
+            ],
+            "maxHit": 42,
+            "spec": 100,
+            "accuracy": 0.6,
+            "type": "MELEE",
+            "message": [
+              "%s smashes for %s!"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Abyssal Whip",
         "value": 0,
-        "maxHit": 42,
-        "accuracy": 0.7,
-        "spec": 0,
-        "quickCodes": [
-          "whip"
+        "attack": [
+          {
+            "code": [
+              "whip",
+              "abyssal whip",
+              "awhip"
+            ],
+            "maxHit": 42,
+            "spec": 0,
+            "accuracy": 0.6,
+            "type": "MELEE",
+            "message": [
+              "%s flicks a %s"
+            ]
+          }
         ]
       },
       {
-        "name": "armadyl godsword",
-        "value": 700000000,
-        "maxHit": 75,
-        "accuracy": 0.8,
-        "spec": 50,
-        "quickCodes": [
-          "ags"
-        ]
-      },
-      {
-        "name": "bandos godsword",
+        "name": "Abyssal Tentacle",
         "value": 30000000,
-        "maxHit": 70,
-        "accuracy": 0.8,
-        "spec": 50,
-        "quickCodes": [
-          "bgs"
-        ]
-      },
-      {
-        "name": "dragon claws",
-        "value": 100000000,
-        "maxHit": 35,
-        "accuracy": 0.6,
-        "spec": 50,
-        "quickCodes": [
-          "dclaw"
-        ]
-      },
-      {
-        "name": "zamorak godsword",
-        "value": 30000000,
-        "maxHit": 54,
-        "accuracy": 0.75,
-        "spec": 50,
-        "quickCodes": [
-          "zgs"
+        "attack": [
+          {
+            "code": [
+              "tent",
+              "tentacle",
+              "abyssal tentacle"
+            ],
+            "maxHit": 45,
+            "spec": 0,
+            "accuracy": 0.75,
+            "type": "MELEE",
+            "condition" : {"type": "POISON", "chance": 0.75, "duration": 4},
+            "message": [
+              "%s flicks a %s!"
+            ]
+          }
         ]
       }
     ],

@@ -1,20 +1,22 @@
-package Game;
+package Game.Battle;
 
+import Game.DuelResult;
+
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DuelHistory {
 
     List<DuelResult> history = new ArrayList<>();
-    int won;
-    int lost;
+    private int won;
+    private int lost;
 
-    public DuelHistory() {
-    }
+    public DuelHistory() { }
 
     public void addDuel(DuelResult game) {
         if ((won == Integer.MAX_VALUE) || (lost == Integer.MAX_VALUE)) {
-            throw new RuntimeException("Game history tally overflowed!");
+            return;
         }
         history.add(game);
 
@@ -37,7 +39,12 @@ public class DuelHistory {
     }
 
     public String toString() {
-        float winRatio = (float) won / lost;
-        return String.format("(Total Games: %d) (Won: %d) (Lost: %d) (Win Rate: %.2f)", getTotalPlayed(), won, lost, winRatio);
+        String winRate;
+        if (lost == 0)
+            winRate = "undefeated!";
+        else
+        winRate = String.format("%.0f%%", 100 *(float)won/(won + lost));
+
+        return String.format("(Total Games: %d) (Won: %d) (Lost: %d) (Win Rate: %s)", getTotalPlayed(), won, lost, winRate);
     }
 }

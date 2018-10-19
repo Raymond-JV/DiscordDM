@@ -2,38 +2,35 @@ package Game;
 
 public class Item {
 
-
-
     private final String name;
-    private final int price;
+    private final int value;
 
-    public Item(String name, int price) {
+    public Item(String name, int value) {
         this.name = name;
-        this.price = price;
+        this.value = value;
     }
 
-    //#TODO clean item design in relation to weaponcomponent
     public Item()
     {
         this.name = null;
-        this.price = 0;
+        this.value = 0;
     }
 
     public Item(Item otherItem)
     {
         this.name = otherItem.getName();
-        this.price = otherItem.getPrice();
+        this.value = otherItem.getValue();
     }
 
     public String getName() {
         return name;
     }
 
-    public int getPrice() {
-        return price;
+    public int getValue() {
+        return value;
     }
 
-    public String info() {
-        return String.format("Name: %s%nPrice: %d%n", name, price);
+    public String toString() {
+        return String.format("Name: %s%nPrice: %d%n", name, value);
     }
 }

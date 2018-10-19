@@ -1,10 +1,12 @@
 package Game;
 
+import Game.Battle.Player;
+
 public class MessageContext {
-    private Account author;
+    private Player author;
     private String message;
 
-    public MessageContext(Account author, String message) {
+    public MessageContext(Player author, String message) {
         this.author = author;
         this.message = message;
     }
@@ -13,7 +15,7 @@ public class MessageContext {
         return message;
     }
 
-    public boolean verifySender(Account toVerify) {
-        return toVerify.getSnowFlakeId().equals(author.getSnowFlakeId());
+    public boolean verifySender(Player toVerify) {
+        return this.author == toVerify;
     }
 }
