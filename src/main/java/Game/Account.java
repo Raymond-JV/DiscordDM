@@ -6,7 +6,7 @@ import Game.Battle.Player;
 public class Account {
 
 
-    private String snowFlakeId = "coffee"; //#TODO TEMPORARY PLACEHOLDER
+    private String snowFlakeId;
     private Player player;
 
 

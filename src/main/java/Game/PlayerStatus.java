@@ -1,6 +1,6 @@
 package Game;
 
-import Game.Battle.InsufficientSpecialException;
+
 import Game.Combat.PlayerCondition;
 
 import java.util.ArrayList;
@@ -25,7 +25,7 @@ public class PlayerStatus {
             return limit;
         }
     }
-    private List<PlayerCondition> playerPlayerConditions = new ArrayList<>();
+    private List<PlayerCondition> playerConditions = new ArrayList<>();
     private boolean turn;
     private int health;
     private int spec;
@@ -40,6 +40,7 @@ public class PlayerStatus {
         this.turn = false;
         this.health = StatusLimits.MAX_HEALTH.value();
         this.spec = StatusLimits.MAX_SPEC.value();
+        this.playerConditions.clear();
     }
 
     public void cycleTurn()
@@ -63,12 +64,12 @@ public class PlayerStatus {
 
     public void removeSpec(int specUsed) throws InsufficientSpecialException {
         if ((spec - specUsed) < StatusLimits.MIN_SPEC.value())
-            throw new InsufficientSpecialException();
+            throw new InsufficientSpecialException(String.format("Move requires %d spec, current spec is %d.", specUsed, spec));
         this.spec -= specUsed;
     }
 
     public void addCondition(PlayerCondition newPlayerCondition) {
-        playerPlayerConditions.add(newPlayerCondition);
+        playerConditions.add(newPlayerCondition);
     }
 
 
@@ -79,7 +80,7 @@ public class PlayerStatus {
 
     public List<PlayerCondition> getPlayerPlayerConditions()
     {
-        return this.playerPlayerConditions;
+        return this.playerConditions;
     }
 
     public int getSpec() {

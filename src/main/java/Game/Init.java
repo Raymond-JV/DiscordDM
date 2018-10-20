@@ -1,33 +1,59 @@
 package Game;
 
 
-import Game.Combat.Effect;
-import Game.Combat.WeaponComponent;
-import Game.Combat.WeaponCondition;
-import JsonData.JsonDataParser;
 
-import java.util.List;
+import Game.Battle.*;
+import Game.Combat.WeaponComponent;
+import JsonData.JsonDataParser;
+import java.util.*;
 
 public class Init {
 
     private static String itemDump = "ItemStats.json";
 
-    public static void main(String[] args) {
-
-
-        JsonDataParser parser = new JsonDataParser(itemDump);
-        List<WeaponComponent> weaponComponents = parser.readWeapons();
-        List<Item> commons = parser.readCommons();
-
-
-        for (WeaponComponent weapon : weaponComponents)
+    private static void testList()
+    {
+        List<Player> players = new ArrayList<>();
+        CircularLinkedList<Player> test = new CircularLinkedList<>();
+        test.addFront(new Player());
+        test.addFront(new Player());
+        for (Player p: players)
         {
-            for (Item item: commons)
-            {
-                if (StringHelper.removeSpace(item.getName()).equalsIgnoreCase(StringHelper.removeSpace(weapon.getName())))
-                    System.out.printf("Collision Detected: %s%n", weapon.getName());
-            }
+            test.addRear(p);
         }
+        test.display();
+    }
+
+    private static void testArena()
+    {
+        JsonDataParser parser = new JsonDataParser(itemDump);
+        List<WeaponComponent> weapons = parser.readWeapons();
+        PlayerSpawner spawner = new PlayerSpawner(weapons);
+        PlayerHandleUpdater updatedNames = new PlayerHandleUpdater();
+
+        List<Player> duelists = new ArrayList<>();
+        duelists.add(0, spawner.createFullyUnlocked());
+        duelists.add(1, spawner.createFullyUnlocked());
+
+        updatedNames.updateHandle(duelists.get(0), "bob");
+        updatedNames.updateHandle(duelists.get(1), "trollermond");
+
+        Duel arena = new Duel(duelists, updatedNames);
+        Scanner in = new Scanner(System.in);
+        while (true)
+        {
+            String input = in.nextLine();
+            String result = arena.inputMove(input);
+            System.out.println(result);
+            System.out.println(arena.getStatus());
+        }
+    }
+
+
+    public static void main(String[] args) throws InterruptedException {
+
+
+        testArena();
 
     }
 }

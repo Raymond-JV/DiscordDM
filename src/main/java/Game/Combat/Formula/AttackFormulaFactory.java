@@ -11,13 +11,19 @@ public class AttackFormulaFactory {
 
     public AttackFormula create(String code)
     {
-        switch (code)
+        switch (code.toLowerCase())
         {
-
             case "dclaw":
+            case "dclaws":
+            case "dragon claws":
                 return new DragonClawFormula();
+            case "gmaul":
+            case "maul":
+            case "granite maul":
+                return new GraniteMaulFormula();
 
             default:
+                System.out.println(code);
                 return new BasicFormula();
         }
     }

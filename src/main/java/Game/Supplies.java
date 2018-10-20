@@ -33,6 +33,23 @@ public class Supplies {
             gold = difference;
         }
     }
+
+    public void setWeapons(List<WeaponComponent> weapons)
+    {
+        this.weapons = weapons;
+    }
+
+    public void addWeapon(WeaponComponent weapon)
+    {
+        this.weapons.add(weapon);
+    }
+
+    public void removeWeapon(WeaponComponent weapon)
+    {
+        this.weapons.remove(weapon);
+    }
+
+
     public boolean hasGold(int value)
     {
         return gold.compareTo(BigInteger.valueOf(value)) >= 0;

@@ -20,6 +20,13 @@ public class WeaponComponent extends Item {
         this.variations = variations;
     }
 
+    public WeaponComponent(WeaponComponent other)
+    {
+        super(other.getName(), other.getValue());
+        this.variations = new HashMap<>();
+        variations.putAll(other.getAttackList());
+    }
+
     public void addAttack(String quickCode, Attack addAttack) {
         this.variations.put(quickCode, addAttack);
     }
@@ -36,8 +43,8 @@ public class WeaponComponent extends Item {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(super.toString());
-        for (Attack move : variations.values()) {
-            sb.append(move.toString());
+        for (Map.Entry<String, Attack> move : variations.entrySet()) {
+            sb.append(String.format("Code: %s, %s", move.getKey(), move.getValue()));
         }
         return sb.toString();
     }

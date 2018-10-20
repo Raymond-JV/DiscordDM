@@ -27,18 +27,16 @@ public final class DragonClawFormula implements AttackFormula {
             }
 
             int sum = 0;
-            StringBuilder sumParticles = new StringBuilder();
 
+            StringBuilder sumParticles = new StringBuilder();
             for (int i = 0; i < particle.length - 1; i++)
             {
                 sum += particle[i];
-                sumParticles.append(String.valueOf(i)).append("-");
+                sumParticles.append(String.valueOf(particle[i])).append("-");
             }
-                sumParticles.append(String.valueOf(particle[particle.length - 1]));
                 int lastParticle = particle[particle.length - 1];
                 sum += lastParticle;
                 sumParticles.append(String.valueOf(lastParticle));
-
 
             return new AttackResult(sum, sumParticles.toString());
         }

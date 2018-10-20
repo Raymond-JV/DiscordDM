@@ -24,7 +24,7 @@ public class RandomHelper {
 
     public static int range(int max)
     {
-        return range(max);
+        return range(0, max);
     }
 
     public static double range(double min, double max)

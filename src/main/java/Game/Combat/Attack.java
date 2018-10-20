@@ -3,22 +3,23 @@ package Game.Combat;
 import Game.Battle.CombatStyle;
 import Game.Battle.Player;
 import Game.Combat.Formula.AttackFormula;
+import Game.Combat.Formula.AttackResult;
 import Game.RandomHelper;
 
 import java.util.Arrays;
 
 public class Attack {
 
-    private CombatStyle type;
-    private WeaponCondition condition;
-    private int maxHit;
-    private int spec;
-    private double accuracy;
-    private String[] message;
-    private String[] code;
+    private final CombatStyle type;
+    private final WeaponCondition condition;
+    private final int maxHit;
+    private final int spec;
+    private final double accuracy;
+    private final String[] message;
+    private final String[] code;
     private AttackFormula damageStrategy;
 
-    public Attack() {}
+
 
     //parsed automatically using gson
     public Attack(CombatStyle type, WeaponCondition condition, int maxHit, int spec, double accuracy, String[] message, String[] code) {
@@ -43,7 +44,7 @@ public class Attack {
     }
 
 
-    public int calculateAttack(Player user, Player other)
+    public AttackResult calculateAttack(Player user, Player other)
     {
         return damageStrategy.calculateAttack(user, other, maxHit, accuracy);
     }
@@ -88,7 +89,7 @@ public class Attack {
     }
     public String toString()
     {
-        return String.format("Max Hit: %d, Spec: %d, Accuracy: %.0f%% , Style: %s%n, First Dialogue: '%s%n'",
+        return String.format("Max Hit: %d, Spec: %d, Accuracy: %.0f%% , Style: %s, First Dialogue: '%s'%n",
                 maxHit, spec, accuracy * 100, type.name(), this.message[0]);
     }
 

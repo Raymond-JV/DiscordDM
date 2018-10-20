@@ -2,209 +2,242 @@ package Game.Battle;
 
 import Game.Combat.Attack;
 import Game.Combat.Effect;
+import Game.Combat.Formula.AttackResult;
 import Game.Combat.PlayerCondition;
-import Game.Combat.WeaponComponent;
-import Game.DuelOutcome;
-import Game.MessageContext;
-import Game.PlayerStatus;
+import Game.Combat.WeaponCondition;
 
-import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Stack;
-
 
 public class Duel {
 
-    //#TODO use circly linked list with list to allow for mpre than 2 players per battle
-    //Possibly add boss battles later
+    private CircularLinkedList<Player> participants = new CircularLinkedList<>();
+    private Player currentPlayer;
+    private Player nextPlayer;
+    private Iterator<Player> turnMarker;
 
-    private List<PlayerNamePairing> participants;
-    private List<DuelOutcome> results = new ArrayList<>();
-    private PlayerNamePairing currentPlayer;
-    private String previousDialogue = null;
+    private PlayerHandleUpdater currentNames;
 
 
-    public Duel(List<PlayerNamePairing> players) {
-        this.participants = players;
-        for (PlayerNamePairing player : players)
-            player.getPlayer().getStatus().refresh();
+    private StringBuilder event = new StringBuilder();
+
+    public Duel(List<Player> participants, PlayerHandleUpdater currentNames)
+    {
+        this.currentNames = currentNames;
         Collections.shuffle(participants);
-        currentPlayer = participants.get(0);
-        currentPlayer.getPlayer().getStatus().setTurn(true);
+        for (Player p : participants)
+            this.participants.addFront(p);
+        this.turnMarker = this.participants.iterator();
+        nextPlayer = turnMarker.next();
+        currentPlayer = turnMarker.next();
     }
 
-    private void switchTurns() {
-        for (PlayerNamePairing p : participants) {
-            if (!p.getPlayer().getStatus().isTurn())
-                currentPlayer = p;
-            p.getPlayer().getStatus().cycleTurn();
+    public String inputMove(String move)
+    {
+        event = new StringBuilder();
+        return validateMove(move);
+    }
+
+
+    public boolean finished()
+    {
+        return participants.size() == 1;
+    }
+
+    public Player getCurrentPlayer()
+    {
+        return currentPlayer;
+    }
+
+
+    private String validateMove(String code)
+    {
+        Attack selectedMove = currentPlayer.getSupplies().getAttack(code);
+        if (selectedMove == null) {
+            event.append("Error: unknown command.\n");
+            event.append("Type 'list' to show available moves.").append("\n");
+            return event.toString();
+        }
+        return verifyAttack(selectedMove);
+    }
+    private String verifyAttack(Attack move)
+    {
+        PlayerCondition frozen = getCondition(currentPlayer, Effect.FREEZE);
+        if ((frozen != null) && (move.getType() == CombatStyle.MELEE))
+        {
+            event.append("You cannot use melee style attacks while frozen.");
+            event.append(String.format("The freeze will last for %d more turns.", frozen.getDuration()));
+            return event.toString();
+        }
+        return verifySpec(move);
+    }
+
+    private String verifySpec(Attack move) {
+        int requiredSpec = move.getSpec();
+        int currentSpec = currentPlayer.getStatus().getSpec();
+        if (requiredSpec > currentSpec)
+        {
+            event.append(String.format("Insufficient special. %s requires %d spec.", move.getCode()[0], move.getSpec()));
+            return event.toString();
+        }
+        else{
+            currentPlayer.getStatus().removeSpec(requiredSpec);
+            return calculateDamage(move);
         }
     }
 
-    //#TODO use circular linked list and call getnext
-    private PlayerNamePairing getDefender() {
-        for (PlayerNamePairing p : participants)
-            if (!p.getPlayer().getStatus().isTurn())
-                return p;
+    private String calculateDamage(Attack move)
+    {
+        AttackResult damage = move.calculateAttack(currentPlayer, nextPlayer);
+        boolean conditionLanded = move.conditionLanded();
+        return checkForPlayerHeal(move, damage, conditionLanded);
+    }
+
+    private String checkForPlayerHeal(Attack move, AttackResult result, boolean condition)
+    {
+        if (condition && (move.getCondition().getType() == Effect.HEAL))
+        {
+            int heal = (int) ((double)result.getRawDamage() * move.getCondition().getPercentage());
+            currentPlayer.getStatus().applyHeal(heal);
+            event.append(String.format("%s healed for %d", currentNames.getHandle(currentPlayer), heal));
+        }
+        return applyDamage(move, result, condition);
+    }
+
+    private String applyDamage(Attack move, AttackResult result, boolean condition) {
+        int damage = result.getRawDamage();
+        //#TODO generate random message code
+        event.append(String.format(move.getMessage()[0], currentNames.getHandle(currentPlayer) , result.getDamageParticles())).append("\n");
+        nextPlayer.getStatus().applyDamage(damage);
+
+        if (verifyDeath(nextPlayer)) {
+            turnMarker.remove();
+            return event.toString();
+        }
+        else {
+            return checkForVenge(move, result);
+        }
+    }
+
+    private String checkForVenge(Attack move, AttackResult result) {
+        PlayerCondition venge = getCondition(nextPlayer, Effect.VENGEANCE);
+        if (venge != null)
+        {
+            int reflect = (int)((double)result.getRawDamage() * venge.getPercentage());
+            currentPlayer.getStatus().applyDamage(reflect);
+            event.append(String.format("%s was struck by venge and took %d damage.%n", "stub", currentNames.getHandle(currentPlayer), reflect));
+            venge.tick();
+            if (verifyDeath(currentPlayer))
+            {
+                turnMarker.remove();
+                return event.toString();
+            }
+        }
+        return checkForGenericConditions(move);
+    }
+
+    private String checkForGenericConditions(Attack move) {
+        String otherName = currentNames.getHandle(nextPlayer);
+        for (PlayerCondition condition : nextPlayer.getStatus().getPlayerPlayerConditions()) {
+            switch (condition.getType()) {
+                case POISON:
+                    int poisonDamage = 6;
+                    nextPlayer.getStatus().applyDamage(poisonDamage);
+                    //#TODO implement class for handling conditions/reading values
+                    event.append(String.format("%s is poisoned and took %d damage.%n", otherName, poisonDamage));
+                    break;
+
+                case VENOM:
+                    int venomDamage = 12;
+                    nextPlayer.getStatus().applyDamage(venomDamage);
+                    event.append(String.format("Player took %d damage from venom.%n", otherName, venomDamage));
+                    break;
+            }
+            condition.tick();
+        }
+        if (verifyDeath(nextPlayer))
+        {
+            turnMarker.remove();
+            return event.toString();
+        }
+        else {
+            return applyCondition(move);
+        }
+    }
+
+    private String applyCondition(Attack move) {
+        WeaponCondition condition = move.getCondition();
+
+        if (move.conditionLanded() && (getCondition(nextPlayer, condition.getType()) == null))
+        {
+                PlayerCondition newCondition = new PlayerCondition(condition.getType(), condition.getDuration(),
+                        condition.getPercentage(), condition.getStrength());
+                String nextName = currentNames.getHandle(nextPlayer);
+                switch (condition.getType()) {
+                    case VENOM:
+                        event.append(nextName).append(" was venomed!\n");
+                        break;
+                    case POISON:
+                        event.append(nextName).append(" was poisoned!\n");
+                }
+                nextPlayer.getStatus().getPlayerPlayerConditions().add(newCondition);
+            }
+        removedExpiredConditions();
+        cycleTurn();
+        return event.toString();
+    }
+
+    private void removedExpiredConditions() {
+
+        for (int i = 0; i < participants.size(); i++)
+        {
+            turnMarker.next().getStatus().getPlayerPlayerConditions().removeIf(PlayerCondition::expired);
+        }
+    }
+
+    //#TODO optimize
+    private boolean verifyDeath(Player player)
+    {
+        if (player.getStatus().getHealth() == 0)
+        {
+            event.append(currentNames.getHandle(player)).append(" died!\n");
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    private void cycleTurn()
+    {
+        nextPlayer = currentPlayer;
+        currentPlayer = turnMarker.next();
+    }
+
+    public String getStatus()
+    {
+        return String.format("%s%n%s", getPlayerStatus(currentPlayer), getPlayerStatus(nextPlayer));
+    }
+
+    private String getPlayerStatus(Player player)
+    {
+        //        for (PlayerCondition condition: player.getStatus().getPlayerPlayerConditions())
+//        {
+//           // sb.append(String.format("Condition: %s Duration: %d", condition.getType().name(), condition.getDuration()));
+//        }
+        String status = String.format("%s, health: %d, spec: %d", currentNames.
+                getHandle(player), player.getStatus().getHealth(), player.getStatus().getSpec());
+        return status;
+    }
+
+    private PlayerCondition getCondition(Player selected, Effect type)
+    {
+        for (PlayerCondition condition : selected.getStatus().getPlayerPlayerConditions())
+        {
+            if (condition.getType() == type)
+                return condition;
+        }
         return null;
     }
-
-    private boolean playerDeath()
-    {
-        for (PlayerNamePairing p : participants)
-        {
-            if (p.getPlayer().getStatus().isDead())
-                return true;
-        }
-        return false;
-    }
-
-    //Stub
-    private void processOutcomes()
-    {
-
-    }
-
-
-
-    public List<DuelOutcome> getResults() {
-        return results;
-    }
-
-
-    private void processCommand(MessageContext message) {
-        switch (message.getMessage()) {
-            case "list":
-                System.out.println("Available Attacks:");
-                List<WeaponComponent> ownedWeapons = currentPlayer.getPlayer().getSupplies().getWeapons();
-                for (WeaponComponent weapon : ownedWeapons) {
-                    System.out.println(weapon.getName());
-                    for (String code : weapon.getAttackList().keySet()) {
-                        System.out.println(code + " ");
-                    }
-                }
-                break;
-            case "help":
-                System.out.println("Help Stub");
-                break;
-            case "shop":
-                System.out.println("Shop stub");
-                break;
-            default:
-                processAttack(message);
-                break;
-        }
-    }
-
-    //Dirty code, need to test weapons ASAP
-    private void processAttack(MessageContext message) {
-
-        if (!message.verifySender(currentPlayer.getPlayer()))
-            return;
-
-        String code = message.getMessage();
-        Attack selectedMove = currentPlayer.getPlayer().getSupplies().getAttack(code);
-        if (selectedMove == null) {
-            previousDialogue = String.format("Error: unknown command%nType 'list' to show available moves.%n");
-            return;
-        }
-
-        previousDialogue = "";
-
-        PlayerNamePairing otherPlayer = this.getDefender();
-
-        assert otherPlayer != null;
-        int damage = selectedMove.calculateAttack(currentPlayer.getPlayer(), otherPlayer.getPlayer());
-        boolean conditionLanded = selectedMove.conditionLanded();
-        if (selectedMove.getCondition().getType() == Effect.HEAL)
-        {
-            if (conditionLanded) {
-                int healAmount = (int) Math.round((double) damage * selectedMove.getCondition().getPercentage());
-                previousDialogue += String.format("%s healed for %d", currentPlayer.getCurrentName(), healAmount);
-            }
-        }
-
-        otherPlayer.getPlayer().getStatus().applyDamage(damage);
-        previousDialogue += String.format(selectedMove.getMessage()[0], currentPlayer.getCurrentName(), String.valueOf(damage));
-        if (playerDeath()) {
-            PlayerNamePairing winner = this.getWinner();
-                    previousDialogue += String.format("%s has won!", winner.getCurrentName());
-                    return;
-        }
-        Stack<PlayerCondition> expired = new Stack<>();
-
-        for (PlayerCondition condition : otherPlayer.getPlayer().getStatus().getPlayerPlayerConditions())
-        {
-            if (condition.getType() == Effect.VENGEANCE)
-            {
-                int reflect = (int)((double)damage * condition.getPercentage());
-                currentPlayer.getPlayer().getStatus().applyDamage(reflect);
-                previousDialogue += String.format("%s was struck by venge and took %d damage.", currentPlayer.getCurrentName(), reflect);
-                expired.add(condition);
-                if (playerDeath()) {
-                    PlayerNamePairing winner = this.getWinner();
-                    previousDialogue += String.format("%s has won!", winner.getCurrentName());
-                    return;
-                }
-            }
-        }
-
-        for (PlayerCondition condition : otherPlayer.getPlayer().getStatus().getPlayerPlayerConditions())
-        {
-            if (condition.getType() == Effect.POISON)
-            {
-                previousDialogue += String.format("%s was damaged by poison and took %d damage.", currentPlayer.getCurrentName(), condition.getStrength());
-                condition.tick();
-                if (condition.expired())
-                    expired.add(condition);
-            }
-
-        }
-
-        List<PlayerCondition> conditions = otherPlayer.getPlayer().getStatus().getPlayerPlayerConditions();
-
-        for (PlayerCondition toRemove : expired)
-            conditions.remove(toRemove);
-
-        switchTurns();
-    }
-
-    private PlayerNamePairing getWinner() {
-        for (PlayerNamePairing p : participants)
-        {
-            if (!p.getPlayer().getStatus().isDead())
-                return p;
-        }
-        throw new RuntimeException("Winner was expected and not found!");
-    }
-
-    public boolean finished() {
-        return results.size() != 0;
-    }
-
-    public String getStatus() {
-        String duelStatus = "";
-        for (PlayerNamePairing player : participants) {
-            PlayerStatus currentStatus = player.getPlayer().getStatus();
-            duelStatus += String.format("Player: %s, Health: %d, Spec: %d%n", player.getCurrentName(),
-                    currentStatus.getHealth(), currentStatus.getSpec());
-        }
-        return duelStatus;
-    }
-
-    public void updatePlayerName(Player toUpdate, String newName) {
-        for (PlayerNamePairing pairing : participants) {
-            if (pairing.getPlayer() == toUpdate)
-                pairing.setCurrentName(newName);
-        }
-    }
-
-
-//    private void processHistory() {
-//        DuelHistory winnerHistory = winner.getPlayerAccount().getRecordedGames();
-//        DuelHistory loserHistory = loser.getPlayerAccount().getRecordedGames();
-//        winnerHistory.addDuel(new DuelResult(winner.getUserName(), loser.getUserName(), DuelResult.Outcome.WIN));
-//        loserHistory.addDuel(new DuelResult(loser.getUserName(), winner.getUserName(), DuelResult.Outcome.LOSE));
-//    }
 }

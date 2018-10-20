@@ -16,7 +16,7 @@
             "accuracy": 0.7,
             "type": "MELEE",
             "message": [
-              "%s whirls the ags and slashes for %s!"
+              "%s whirls their armadyl godsword and slashes for %s."
             ]
           }
         ]
@@ -36,7 +36,7 @@
             "accuracy": 0.6,
             "type": "MELEE",
             "message": [
-              "%s smashes for %s!"
+              "%s is such a prod. ROCK SMASH %s."
             ]
           }
         ]
@@ -56,7 +56,7 @@
             "accuracy": 0.6,
             "type": "MELEE",
             "message": [
-              "%s flicks a %s"
+              "%s flicks the whip for %s."
             ]
           }
         ]
@@ -77,7 +77,27 @@
             "type": "MELEE",
             "condition" : {"type": "POISON", "chance": 0.75, "duration": 4},
             "message": [
-              "%s flicks a %s!"
+              "%s flicks the tentacle for %s."
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Dragon Claws",
+        "value": 80000000,
+        "attack": [
+          {
+            "code": [
+              "dclaws",
+              "claws",
+              "dragon claws"
+            ],
+            "maxHit": 42,
+            "spec": 50,
+            "accuracy": 0.75,
+            "type": "MELEE",
+            "message": [
+              "%s slices and dices for %s."
             ]
           }
         ]
