@@ -4,7 +4,9 @@ package Game;
 
 import Game.Battle.*;
 import Game.Combat.WeaponComponent;
-import JsonData.JsonDataParser;
+import Data.JsonDataParser;
+import Utility.CircularLinkedList;
+
 import java.util.*;
 
 public class Init {

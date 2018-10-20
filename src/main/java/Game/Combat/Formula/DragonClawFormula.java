@@ -1,7 +1,7 @@
 package Game.Combat.Formula;
 
 import Game.Battle.Player;
-import Game.RandomHelper;
+import Utility.RandomHelper;
 
 public final class DragonClawFormula implements AttackFormula {
 

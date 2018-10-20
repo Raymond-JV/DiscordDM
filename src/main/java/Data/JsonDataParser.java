@@ -1,57 +1,89 @@
 package Data;
 
+import Data.JsonHelper;
+import Game.Combat.*;
+import Game.Combat.Formula.AttackFormula;
+import Game.Combat.Formula.AttackFormulaFactory;
 import Game.Item;
-
 import com.google.gson.*;
 
-import java.util.ArrayList;
-import java.util.List;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class JsonDataParser {
 
 
-    private List<Item> commons;
-    private List<JsonWeaponData> weapons;
-    private JsonObject data;
-    private Gson gson = new Gson();
-
+    private final JsonObject data;
+    private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
     public JsonDataParser(String fileName) {
-
         this.data = JsonHelper.getJsonObject(fileName);
-        this.data = this.data.getAsJsonObject(ItemFields.ItemList.field).getAsJsonObject();
     }
 
-    private List<Item> readCommons() {
-        commons = new ArrayList<>();
-        JsonArray commonsList = data.getAsJsonArray(ItemFields.Commons.field);
-        for (JsonElement currentItem : commonsList) {
-            JsonObject itemInfo = currentItem.getAsJsonObject();
-            commons.add(gson.fromJson(itemInfo, Item.class));
+    public List<WeaponComponent> readWeapons() {
+
+        JsonArray weaponData = data.getAsJsonObject(JsonField.ITEMS.value()).getAsJsonArray(JsonField.WEAPONS.value());
+        List<WeaponComponent> weaponList = new ArrayList<>();
+
+        for (JsonElement element : weaponData)
+        {
+            JsonObject weapon = element.getAsJsonObject();
+            String name = weapon.get(JsonField.NAME.value()).getAsString();
+            int value = weapon.get(JsonField.VALUE.value()).getAsInt();
+
+            JsonArray attacks = weapon.get(JsonField.ATTACK.value()).getAsJsonArray();
+
+            Map<String, Attack> variations = new HashMap<>();
+            AttackFormulaFactory formulaBuilder = new AttackFormulaFactory();
+            for (JsonElement e : attacks)
+            {
+               JsonObject attackData = e.getAsJsonObject();
+               Attack newAttack = gson.fromJson(attackData, Attack.class);
+               AttackFormula damageStrategy = formulaBuilder.create(newAttack.getCode()[0]);
+               newAttack.setFormula(damageStrategy);
+
+               for (String key : newAttack.getCode())
+                     variations.put(key, newAttack);
+            }
+            weaponList.add(new WeaponComponent(name, value, variations));
         }
+        return weaponList;
+    }
+
+    public List<Item> readCommons()
+    {
+        JsonArray commonData = data.getAsJsonObject(JsonField.ITEMS.value()).getAsJsonArray(JsonField.COMMONS.value());
+
+        List<Item> commons = new ArrayList<>();
+
+        for (JsonElement item : commonData)
+            commons.add(gson.fromJson(item, Item.class));
+
         return commons;
     }
-    private List<JsonWeaponData> readWeapons()
-    {
-        weapons = new ArrayList<>();
-        JsonArray weaponList = data.getAsJsonArray(ItemFields.Weapons.field);
-        for (JsonElement currentWeapon : weaponList) {
-            {
-                JsonObject weaponInfo = currentWeapon.getAsJsonObject();
-                JsonWeaponData currentDump = gson.fromJson(weaponInfo, JsonWeaponData.class);
-                weapons.add(currentDump);
-            }
+
+    private enum JsonField {
+
+        WEAPONS("weapons"),
+        ITEMS("items"),
+        NAME("name"),
+        VALUE("value"),
+        ATTACK("attack"),
+        COMMONS("commons");
+
+        private String field;
+
+        JsonField(String field) {
+            this.field = field;
         }
-        return weapons;
+
+        public String value()
+        {
+            return field;
+        }
     }
 
-    public List<Item> getCommons() {
-    return (commons == null) ? readCommons() : commons;
-    }
 
-    public List<JsonWeaponData> getWeapons() {
-    return (weapons == null) ? readWeapons() : weapons;
-    }
 }
-
-

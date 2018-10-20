@@ -2,7 +2,7 @@ package Game.Combat.Formula;
 
 
 import Game.Battle.Player;
-import Game.RandomHelper;
+import Utility.RandomHelper;
 
 public final class BasicFormula implements AttackFormula {
 

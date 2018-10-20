@@ -1,7 +1,7 @@
 package Game.Battle;
 
 import Game.Item;
-import Game.RandomHelper;
+import Utility.RandomHelper;
 
 import java.util.List;
 

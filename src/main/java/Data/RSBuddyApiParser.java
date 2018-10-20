@@ -1,4 +1,4 @@
-package Scripts;
+package Data;
 
 import com.google.gson.*;
 import com.google.gson.stream.JsonReader;

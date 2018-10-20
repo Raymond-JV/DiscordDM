@@ -1,9 +1,10 @@
-package Game.Battle;
+package Utility;
 
 import java.util.Iterator;
 
 import java.util.NoSuchElementException;
 
+@SuppressWarnings("ALL")
 public class CircularLinkedList<T>  {
 
     private Node<T> front;
@@ -97,13 +98,13 @@ public class CircularLinkedList<T>  {
         }
     }
 
-    private class Node<T> {
+    private class Node<E> {
 
-        Node<T> next;
-        Node<T> previous;
-        T data;
+        Node<E> next;
+        Node<E> previous;
+        E data;
 
-        private Node(T data) {
+        private Node(E data) {
             this.data = data;
         }
     }

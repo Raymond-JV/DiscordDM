@@ -2,12 +2,11 @@ package Game;
 
 
 
-import Game.Battle.Duel;
 import Game.Battle.DuelArena;
 import Game.Battle.Player;
 import Game.Battle.PlayerHandleUpdater;
 import Game.Combat.WeaponComponent;
-import JsonData.JsonDataParser;
+import Data.JsonDataParser;
 
 import java.util.ArrayList;
 import java.util.List;

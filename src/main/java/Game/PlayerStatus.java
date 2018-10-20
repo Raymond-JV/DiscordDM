@@ -1,6 +1,7 @@
 package Game;
 
 
+import Game.Battle.InsufficientSpecialException;
 import Game.Combat.PlayerCondition;
 
 import java.util.ArrayList;

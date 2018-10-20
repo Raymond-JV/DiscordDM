@@ -5,6 +5,7 @@ import Game.Combat.Effect;
 import Game.Combat.Formula.AttackResult;
 import Game.Combat.PlayerCondition;
 import Game.Combat.WeaponCondition;
+import Utility.CircularLinkedList;
 
 import java.util.Collections;
 import java.util.Iterator;

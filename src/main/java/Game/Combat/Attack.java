@@ -4,7 +4,7 @@ import Game.Battle.CombatStyle;
 import Game.Battle.Player;
 import Game.Combat.Formula.AttackFormula;
 import Game.Combat.Formula.AttackResult;
-import Game.RandomHelper;
+import Utility.RandomHelper;
 
 import java.util.Arrays;
 

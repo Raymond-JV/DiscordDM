@@ -14,7 +14,7 @@ public class JsonHelper {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         JsonObject data = null;
 
-        try (InputStream resourceAsStream = JsonDataParser.class.getClassLoader().getResourceAsStream(fileName);
+        try (InputStream resourceAsStream = JsonHelper.class.getClassLoader().getResourceAsStream(fileName);
 
              JsonReader reader = gson.newJsonReader(new InputStreamReader(resourceAsStream))) {
             JsonParser parser = new JsonParser();

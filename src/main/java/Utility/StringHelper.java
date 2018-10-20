@@ -1,4 +1,4 @@
-package Game;
+package Utility;
 
 public final class StringHelper {
 
