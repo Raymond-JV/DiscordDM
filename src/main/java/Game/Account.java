@@ -10,8 +10,10 @@ public class Account {
     private Player player;
 
 
-    public Account(String snowFlakeId) {
+    public Account(String snowFlakeId, Player player) {
+
         this.snowFlakeId = snowFlakeId;
+        this.player = player;
     }
 
     public String getSnowFlakeId() {

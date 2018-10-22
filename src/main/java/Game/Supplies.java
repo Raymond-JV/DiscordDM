@@ -13,7 +13,6 @@ import java.util.Map;
 
 public class Supplies {
     private BigInteger gold = BigInteger.valueOf(0);
-    //#TODO convert to hashmap, use quickcodes of each weapon as a multi or key
     private List<WeaponComponent> weapons = new ArrayList<>();
     //private UnlockedAttacks availableAttacks = new UnlockedAttacks();
 

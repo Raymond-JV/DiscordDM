@@ -17,7 +17,6 @@ public class Duel {
     private Player currentPlayer;
     private Player nextPlayer;
     private Iterator<Player> turnMarker;
-
     private PlayerHandleUpdater currentNames;
 
 

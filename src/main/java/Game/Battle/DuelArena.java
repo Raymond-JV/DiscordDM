@@ -10,19 +10,17 @@ import java.util.List;
 public class DuelArena {
 
 
-    private PlayerHandleUpdater synchronizedNames;
+    private PlayerHandleUpdater effectiveNames;
     private Duel duel;
 
 
-    public DuelArena(PlayerHandleUpdater synchronizedNames) {
-        this.synchronizedNames = synchronizedNames;
+    public DuelArena(PlayerHandleUpdater effectiveNames) {
+        this.effectiveNames = effectiveNames;
     }
-
-
 
     public void startDuel(List<Player> participant)
     {
-        duel = new Duel(participant, synchronizedNames);
+        duel = new Duel(participant, effectiveNames);
     }
 
     private String inputMove(String code)
@@ -49,10 +47,11 @@ public class DuelArena {
                 prompt.append("Available Attacks:");
                 List<WeaponComponent> ownedWeapons = this.duel.getCurrentPlayer().getSupplies().getWeapons();
                 for (WeaponComponent weapon : ownedWeapons) {
-                    prompt.append("\n").append(weapon.getName()).append(" codes: ");
+                    prompt.append("\n").append(weapon.getName()).append(" codes ");
                     for (String code : weapon.getAttackList().keySet()) {
                         prompt.append(code).append(" ");
                     }
+                    prompt.append("\n");
                 }
                 return prompt.toString();
             case "help":
