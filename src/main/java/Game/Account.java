@@ -1,14 +1,11 @@
 package Game;
 
-
 import Game.Battle.Player;
 
 public class Account {
 
-
     private String snowFlakeId;
     private Player player;
-
 
     public Account(String snowFlakeId, Player player) {
 

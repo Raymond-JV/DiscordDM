@@ -7,15 +7,14 @@ public class PlayerHandleUpdater {
 
     private Map<Player, String> handles = new HashMap<>();
 
-    public PlayerHandleUpdater() {}
+    public PlayerHandleUpdater() {
+    }
 
-    public void updateHandle(Player user, String name){
+    public void updateHandle(Player user, String name) {
         handles.put(user, name);
     }
 
-    public String getHandle(Player user)
-    {
+    public String getHandle(Player user) {
         return handles.get(user);
     }
-
 }

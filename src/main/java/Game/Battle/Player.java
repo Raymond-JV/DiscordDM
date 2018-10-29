@@ -8,8 +8,8 @@ public class Player {
     private Supplies supplies = new Supplies();
     private PlayerStatus status = new PlayerStatus();
 
-
-    public Player() {}
+    public Player() {
+    }
 
     public Supplies getSupplies() {
         return supplies;

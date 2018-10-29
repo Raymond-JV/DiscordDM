@@ -1,7 +1,5 @@
 package Game;
 
-
-
 import Game.Battle.InsufficientFundsException;
 import Game.Combat.Attack;
 import Game.Combat.WeaponComponent;
@@ -12,15 +10,15 @@ import java.util.List;
 import java.util.Map;
 
 public class Supplies {
+
     private BigInteger gold = BigInteger.valueOf(0);
     private List<WeaponComponent> weapons = new ArrayList<>();
     //private UnlockedAttacks availableAttacks = new UnlockedAttacks();
 
-    public Supplies()
-    {}
+    public Supplies() {
+    }
 
-    public void addGold(int value)
-    {
+    public void addGold(int value) {
         gold = gold.add(BigInteger.valueOf(value));
     }
 
@@ -33,36 +31,24 @@ public class Supplies {
         }
     }
 
-    public void setWeapons(List<WeaponComponent> weapons)
-    {
-        this.weapons = weapons;
-    }
-
-    public void addWeapon(WeaponComponent weapon)
-    {
+    public void addWeapon(WeaponComponent weapon) {
         this.weapons.add(weapon);
     }
 
-    public void removeWeapon(WeaponComponent weapon)
-    {
+    public void removeWeapon(WeaponComponent weapon) {
         this.weapons.remove(weapon);
     }
 
-
-    public boolean hasGold(int value)
-    {
+    public boolean hasGold(int value) {
         return gold.compareTo(BigInteger.valueOf(value)) >= 0;
     }
-    public BigInteger getGold()
-    {
+
+    public BigInteger getGold() {
         return gold;
     }
 
-
-    public Attack getAttack(String code)
-    {
-        for (WeaponComponent weapon : weapons)
-        {
+    public Attack getAttack(String code) {
+        for (WeaponComponent weapon : weapons) {
             Map<String, Attack> attackList = weapon.getAttackList();
             if (attackList.containsKey(code))
                 return attackList.get(code);
@@ -74,6 +60,7 @@ public class Supplies {
         return weapons;
     }
 
-
-
+    public void setWeapons(List<WeaponComponent> weapons) {
+        this.weapons = weapons;
+    }
 }

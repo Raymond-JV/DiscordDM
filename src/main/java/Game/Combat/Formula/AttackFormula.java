@@ -4,6 +4,5 @@ import Game.Battle.Player;
 
 public interface AttackFormula {
 
-   AttackResult calculateAttack(Player user, Player other, int maxHit, double accuracy);
-
+    AttackResult calculateAttack(Player user, Player other, int maxHit, double accuracy);
 }

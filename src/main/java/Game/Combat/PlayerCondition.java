@@ -1,4 +1,5 @@
 package Game.Combat;
+
 public class PlayerCondition {
 
     private Effect type;
@@ -14,17 +15,17 @@ public class PlayerCondition {
     }
 
     public void tick() {
-            this.duration--;
+        this.duration--;
     }
 
-    public boolean expired()
-    {
+    public boolean expired() {
         return this.duration == 0;
     }
 
     public Effect getType() {
         return type;
     }
+
     public int getDuration() {
         return duration;
     }

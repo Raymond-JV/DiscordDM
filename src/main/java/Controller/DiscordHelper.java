@@ -4,8 +4,7 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public class DiscordHelper {
 
-    public String parseInput(MessageReceivedEvent event)
-    {
+    public String parseInput(MessageReceivedEvent event) {
         if (event.getAuthor().isBot())
             return null;
 
@@ -13,6 +12,35 @@ public class DiscordHelper {
         if (input.length != 2)
             return null;
 
-        return input[1];
+        return input[1].toLowerCase();
+    }
+
+    public String bold(String name)
+    {
+        return Markup.BOLD.value() + name + Markup.BOLD.value();
+    }
+
+    public String strike(String name)
+    {
+        return Markup.STRIKE.value() + name + Markup.STRIKE.value();
+    }
+
+    public enum Markup
+    {
+        BOLD("**"),
+        STRIKE("~~");
+
+        private String mark;
+
+        Markup(String mark) {
+            this.mark = mark;
+        }
+
+        public String value()
+        {
+            return mark;
+        }
     }
 }
+
+

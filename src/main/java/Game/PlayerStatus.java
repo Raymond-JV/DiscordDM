@@ -1,6 +1,5 @@
 package Game;
 
-
 import Game.Battle.InsufficientSpecialException;
 import Game.Combat.PlayerCondition;
 
@@ -9,58 +8,33 @@ import java.util.List;
 
 public class PlayerStatus {
 
-    private enum StatusLimits{
-        MAX_HEALTH (99),
-        MIN_HEALTH(0),
-        MAX_SPEC(100),
-        MIN_SPEC(0);
-
-        private final int limit;
-
-        StatusLimits(int limit)
-        {
-            this.limit = limit;
-        }
-        private int value()
-        {
-            return limit;
-        }
-    }
     private List<PlayerCondition> playerConditions = new ArrayList<>();
     private boolean turn;
     private int health;
     private int spec;
 
-    public PlayerStatus()
-    {
+    public PlayerStatus() {
         this.refresh();
     }
 
-    public void refresh()
-    {
+    public void refresh() {
         this.turn = false;
         this.health = StatusLimits.MAX_HEALTH.value();
         this.spec = StatusLimits.MAX_SPEC.value();
         this.playerConditions.clear();
     }
 
-    public void cycleTurn()
-    {
+    public void cycleTurn() {
         this.turn = !this.turn;
     }
 
-    public void setTurn(boolean newTurn)
-    {
-        this.turn = newTurn;
-    }
-
     public void applyHeal(int heal) {
-        health = Math.min(StatusLimits.MAX_HEALTH.value(), heal);
+
+        this.health = Math.min(StatusLimits.MAX_HEALTH.value(), heal + this.health);
     }
 
     public void applyDamage(int damage) {
         health = Math.max(health - damage, StatusLimits.MIN_HEALTH.value());
-
     }
 
     public void removeSpec(int specUsed) throws InsufficientSpecialException {
@@ -73,14 +47,11 @@ public class PlayerStatus {
         playerConditions.add(newPlayerCondition);
     }
 
-
     public int getHealth() {
         return health;
     }
 
-
-    public List<PlayerCondition> getPlayerPlayerConditions()
-    {
+    public List<PlayerCondition> getPlayerPlayerConditions() {
         return this.playerConditions;
     }
 
@@ -93,8 +64,27 @@ public class PlayerStatus {
         return this.health <= StatusLimits.MIN_HEALTH.value();
     }
 
-    public boolean isTurn(){
+    public boolean isTurn() {
         return this.turn;
     }
 
+    public void setTurn(boolean newTurn) {
+        this.turn = newTurn;
+    }
+
+    private enum StatusLimits {
+        MAX_HEALTH(99),
+        MIN_HEALTH(0),
+        MAX_SPEC(100),
+        MIN_SPEC(0);
+        private final int limit;
+
+        StatusLimits(int limit) {
+            this.limit = limit;
+        }
+
+        private int value() {
+            return limit;
+        }
+    }
 }

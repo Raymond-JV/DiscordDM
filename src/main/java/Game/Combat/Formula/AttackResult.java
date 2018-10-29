@@ -1,7 +1,7 @@
 package Game.Combat.Formula;
 
-public class AttackResult
-{
+public class AttackResult {
+
     private final int rawDamage;
     private final String damageParticles;
 

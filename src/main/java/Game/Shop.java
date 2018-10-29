@@ -13,22 +13,19 @@ public class Shop {
     Map<String, WeaponComponent> sale = new HashMap<>();
     private StringBuilder message;
 
-    public Shop(List<WeaponComponent> sale)
-    {
+    public Shop(List<WeaponComponent> sale) {
         for (WeaponComponent w : sale)
             this.sale.put(w.getName(), w);
     }
 
-    public boolean buy(Player player, String item)
-    {
+    public boolean buy(Player player, String item) {
         WeaponComponent wanted = sale.get(item);
         int cost = wanted.getValue();
 
-        if (player.getSupplies().hasGold(cost)){
+        if (player.getSupplies().hasGold(cost)) {
             processTransaction(player, wanted);
             return true;
-        }
-        else
+        } else
             return false;
     }
 
@@ -44,12 +41,10 @@ public class Shop {
         }
     }
 
-    public String getItemsForSale()
-    {
+    public String getItemsForSale() {
         StringBuilder sb = new StringBuilder();
         sb.append("General Store");
-        for (WeaponComponent item : sale.values())
-        {
+        for (WeaponComponent item : sale.values()) {
             sb.append(item.getName());
             sb.append(String.format(" : %10d gp", item.getValue()));
         }

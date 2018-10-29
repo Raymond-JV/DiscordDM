@@ -13,22 +13,20 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-
 public class DuelClient {
 
+    private final static Logger logger = LogManager.getLogger(DuelClient.class);
     private static String tokenFile = "token.txt";
     private static String itemData = "ItemStats.json";
-    private final static Logger logger = LogManager.getLogger(DuelClient.class);
 
-    public static void main(String[] args){
+
+    public static void main(String[] args) {
 
         JDA client = null;
         try {
-            String token;
             InputStream in = DuelClient.class.getClassLoader().getResourceAsStream(tokenFile);
-            token = new BufferedReader(new InputStreamReader(in)).readLine();
+            String token = new BufferedReader(new InputStreamReader(in)).readLine();
             client = new JDABuilder(token).build();
-
         } catch (LoginException e) {
             System.err.println("Error logging in with token.");
             e.printStackTrace();
@@ -39,15 +37,14 @@ public class DuelClient {
 
         logger.debug("Client successfully created!");
 
-
         if (client == null)
-            return;
-
+            throw new RuntimeException("JDA client failed to load!");
         JsonDataParser parser = new JsonDataParser(itemData);
         DuelLobby lobby = new DuelLobby(client);
         PlayerSpawner spawner = new PlayerSpawner(parser.readWeapons());
+        PlayerStatusViewer statusViewer = new PlayerStatusViewer(new StatusPictureTransformer());
 
-        client.addEventListener(new DuelBattleListener(lobby));
+        client.addEventListener(new DuelBattleListener(lobby, statusViewer));
         client.addEventListener(new DuelListener(lobby, spawner));
 
     }

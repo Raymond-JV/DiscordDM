@@ -2,10 +2,10 @@ package Utility;
 
 public final class StringHelper {
 
-    private StringHelper(){}
+    private StringHelper() {
+    }
 
-    public static String removeSpace(String s)
-    {
+    public static String removeSpace(String s) {
         return s.replaceAll(" ", "");
     }
 }

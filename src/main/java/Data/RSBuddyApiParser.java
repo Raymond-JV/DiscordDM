@@ -3,9 +3,14 @@ package Data;
 import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
 
-import java.io.*;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.math.BigInteger;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 //This script reads the RSBuddy api item dump and creates an appropriate json data set.
 //The names and prices of interesting items are recorded to be used in DiscordDM's drop system.
@@ -15,7 +20,6 @@ public class RSBuddyApiParser {
     private static String outputFile = "src/main/drop_table.txt";
     private static String apiFileName = "RSBuddyItemDump.json";
     private static Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
-
     private static Map<String, Integer> priceGuide = new HashMap<>();
 
     public static void main(String[] args) {
@@ -30,7 +34,6 @@ public class RSBuddyApiParser {
         }
 
         System.out.printf("%nDrop Table successfully written as '%s'", outputFile);
-
     }
 
     private static void parseApiDumpIntoMap() {
@@ -56,7 +59,6 @@ public class RSBuddyApiParser {
             } else if (garbageItems.stream().anyMatch(currentName::contains) && currentPrice < 1000)
                 priceGuide.put(currentName, currentPrice);
         }
-
     }
 
     private static JsonArray createCommonsJsonObject() {

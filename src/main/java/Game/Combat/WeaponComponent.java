@@ -1,6 +1,5 @@
 package Game.Combat;
 
-
 import Game.Item;
 
 import java.util.HashMap;
@@ -16,8 +15,7 @@ public class WeaponComponent extends Item {
         this.variations = variations;
     }
 
-    public WeaponComponent(WeaponComponent other)
-    {
+    public WeaponComponent(WeaponComponent other) {
         super(other.getName(), other.getValue());
         this.variations = new HashMap<>();
         variations.putAll(other.getAttackList());

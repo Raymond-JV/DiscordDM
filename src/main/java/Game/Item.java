@@ -10,14 +10,12 @@ public class Item {
         this.value = value;
     }
 
-    public Item()
-    {
+    public Item() {
         this.name = null;
         this.value = 0;
     }
 
-    public Item(Item otherItem)
-    {
+    public Item(Item otherItem) {
         this.name = otherItem.getName();
         this.value = otherItem.getValue();
     }

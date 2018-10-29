@@ -17,5 +17,4 @@ public class DuelResult {
     }
 
     public enum Outcome {WIN, LOSE}
-
 }

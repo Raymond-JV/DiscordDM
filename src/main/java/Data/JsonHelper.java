@@ -20,7 +20,6 @@ public class JsonHelper {
             JsonParser parser = new JsonParser();
             JsonElement element = parser.parse(reader);
             data = element.getAsJsonObject();
-
         } catch (IOException e1) {
             e1.printStackTrace();
         }

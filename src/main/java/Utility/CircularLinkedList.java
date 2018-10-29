@@ -1,30 +1,26 @@
 package Utility;
 
 import java.util.Iterator;
-
 import java.util.NoSuchElementException;
 
 @SuppressWarnings("ALL")
-public class CircularLinkedList<T>  {
+public class CircularLinkedList<T> {
 
     private Node<T> front;
     private Node<T> rear;
     private int size = 0;
 
-    public CircularLinkedList()
-    {}
+    public CircularLinkedList() {
+    }
 
-    public void addFront(T data)
-    {
+    public void addFront(T data) {
         if (front == null) {
             Node<T> node = new Node<>(data);
             node.next = node;
             node.previous = node;
             front = node;
-            rear  = node;
-        }
-        else
-        {
+            rear = node;
+        } else {
             Node<T> node = new Node<>(data);
             node.next = front;
             node.previous = rear;
@@ -35,12 +31,10 @@ public class CircularLinkedList<T>  {
         size++;
     }
 
-    public void addRear(T data)
-    {
+    public void addRear(T data) {
         if (front == null)
             addFront(data);
-        else
-        {
+        else {
             Node<T> node = new Node<>(data);
             node.previous = rear;
             node.next = front;
@@ -51,46 +45,37 @@ public class CircularLinkedList<T>  {
         }
     }
 
-    public void remove(T data)
-    {
+    public void remove(T data) {
         Iterator<T> bookmark = new CircularIterator();
 
-          while (bookmark.hasNext()) {
-              if (bookmark.next() == data)
-              {
-                    bookmark.remove();   //iterator decrements size
-                    return;
-              }
-          }
+        while (bookmark.hasNext()) {
+            if (bookmark.next() == data) {
+                bookmark.remove();   //iterator decrements size
+                return;
+            }
+        }
     }
 
-    public int size()
-    {
+    public int size() {
         return size;
     }
 
-    public T getFront()
-    {
+    public T getFront() {
         return (front != null) ? front.data : null;
     }
 
-    public T getRear()
-    {
+    public T getRear() {
         return (rear != null) ? rear.data : null;
     }
 
-
-    public Iterator<T> iterator()
-    {
+    public Iterator<T> iterator() {
         return new CircularIterator();
     }
 
-    public void display()
-    {
+    public void display() {
         Node<T> current = front;
 
-        while (current != null)
-        {
+        while (current != null) {
             System.out.println(current.data);
             current = current.next;
             if (current == front)
@@ -109,8 +94,8 @@ public class CircularLinkedList<T>  {
         }
     }
 
-   private class CircularIterator implements Iterator<T>
-    {
+    private class CircularIterator implements Iterator<T> {
+
         private Node<T> current;
 
         @Override
@@ -137,11 +122,11 @@ public class CircularLinkedList<T>  {
                 throw new NoSuchElementException();
 
             if ((front == rear) && (front.data == current.data)) {
-                    front = null;
-                    rear = null;
-                    size--;
-                    return;
-                }
+                front = null;
+                rear = null;
+                size--;
+                return;
+            }
             if (front.data == current.data)
                 front = front.next;
             if (rear.data == current.data)

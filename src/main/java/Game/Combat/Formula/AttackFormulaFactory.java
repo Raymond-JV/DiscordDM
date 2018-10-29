@@ -1,25 +1,20 @@
 package Game.Combat.Formula;
 
+import Game.Combat.Attack;
+
 public class AttackFormulaFactory {
 
-    public AttackFormulaFactory()
-    {}
+    public AttackFormulaFactory() {
+    }
 
-    public AttackFormula create(String code)
-    {
-        switch (code.toLowerCase())
-        {
+    public AttackFormula create(Attack attack) {
+        switch (attack.getCode()[0]) {
             case "dclaw":
             case "dclaws":
             case "dragon claws":
                 return new DragonClawFormula();
-            case "gmaul":
-            case "maul":
-            case "granite maul":
-                return new GraniteMaulFormula();
-
             default:
-                return new BasicFormula();
+                return new BasicFormula(Math.max(1, attack.getNumHits()));
         }
     }
 }

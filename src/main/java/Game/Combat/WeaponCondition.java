@@ -1,6 +1,7 @@
 package Game.Combat;
 
 public class WeaponCondition {
+
     private Effect type;
     private double chance;
     private int duration;

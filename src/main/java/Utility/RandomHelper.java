@@ -9,8 +9,7 @@ public class RandomHelper {
     private RandomHelper() {
     }
 
-    public static boolean chance(double accuracy)
-    {
+    public static boolean chance(double accuracy) {
         return seed.nextDouble() <= accuracy;
     }
 
@@ -22,13 +21,11 @@ public class RandomHelper {
         }
     }
 
-    public static int range(int max)
-    {
+    public static int range(int max) {
         return range(0, max);
     }
 
-    public static double range(double min, double max)
-    {
+    public static double range(double min, double max) {
         if (min > max) {
             throw new RuntimeException("Are you serious lol. Min > Max in RandomHelper.range()");
         } else {
@@ -36,8 +33,7 @@ public class RandomHelper {
         }
     }
 
-    public static double range(double max)
-    {
+    public static double range(double max) {
         return range(0, max);
     }
 }

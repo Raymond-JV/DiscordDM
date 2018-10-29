@@ -5,6 +5,7 @@ import Game.Battle.Player;
 import Game.Combat.Formula.AttackFormula;
 import Game.Combat.Formula.AttackResult;
 import Utility.RandomHelper;
+import com.google.gson.annotations.SerializedName;
 
 import java.util.Arrays;
 
@@ -17,12 +18,12 @@ public class Attack {
     private final double accuracy;
     private final String[] message;
     private final String[] code;
+    @SerializedName("numHits")
+    private final int numHits;
     private AttackFormula damageStrategy;
 
-
-
     //parsed automatically using gson
-    public Attack(CombatStyle type, WeaponCondition condition, int maxHit, int spec, double accuracy, String[] message, String[] code) {
+    public Attack(CombatStyle type, WeaponCondition condition, int maxHit, int spec, double accuracy, String[] message, String[] code, int numHits) {
         this.type = type;
         this.condition = condition;
         this.maxHit = maxHit;
@@ -30,10 +31,10 @@ public class Attack {
         this.accuracy = accuracy;
         this.message = message;
         this.code = code;
+        this.numHits = numHits;
     }
 
-    public Attack(Attack other)
-    {
+    public Attack(Attack other) {
         this.type = other.type;
         this.condition = new WeaponCondition(other.condition);
         this.maxHit = other.maxHit;
@@ -41,18 +42,17 @@ public class Attack {
         this.accuracy = other.accuracy;
         this.message = Arrays.copyOf(other.message, other.message.length);
         this.code = Arrays.copyOf(other.code, other.code.length);
+        this.numHits = other.numHits;
     }
 
-
-    public AttackResult calculateAttack(Player user, Player other)
-    {
+    public AttackResult calculateAttack(Player user, Player other) {
         return damageStrategy.calculateAttack(user, other, maxHit, accuracy);
     }
 
-    public void setFormula(AttackFormula damageStrategy)
-    {
+    public void setFormula(AttackFormula damageStrategy) {
         this.damageStrategy = damageStrategy;
     }
+
     public CombatStyle getType() {
         return type;
     }
@@ -73,11 +73,10 @@ public class Attack {
         return accuracy;
     }
 
-    public boolean conditionLanded()
-    {
+    public boolean conditionLanded() {
         if (condition == null)
             return false;
-       return RandomHelper.chance(condition.getChance());
+        return RandomHelper.chance(condition.getChance());
     }
 
     public String[] getMessage() {
@@ -87,11 +86,14 @@ public class Attack {
     public String[] getCode() {
         return code;
     }
-    public String toString()
+
+    public int getNumHits()
     {
+        return this.numHits;
+    }
+
+    public String toString() {
         return String.format("Max Hit: %d, Spec: %d, Accuracy: %.0f%% , Style: %s, First Dialogue: '%s'%n",
                 maxHit, spec, accuracy * 100, type.name(), this.message[0]);
     }
-
-
 }

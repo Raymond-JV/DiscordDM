@@ -5,236 +5,227 @@ import Game.Combat.Effect;
 import Game.Combat.Formula.AttackResult;
 import Game.Combat.PlayerCondition;
 import Game.Combat.WeaponCondition;
-import Utility.CircularLinkedList;
+import Game.PlayerStatus;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class Duel {
 
-    private CircularLinkedList<Player> participants = new CircularLinkedList<>();
-    private Player currentPlayer;
-    private Player nextPlayer;
-    private Iterator<Player> turnMarker;
-    private PlayerHandleUpdater currentNames;
+        private TurnKeeper marker;
+        private PlayerHandleUpdater currentNames;
+        private List<Event> eventSequence = new ArrayList<>();
+        private static Logger logger = LogManager.getLogger(Duel.class);
 
 
-    private StringBuilder event = new StringBuilder();
-
-    public Duel(List<Player> participants, PlayerHandleUpdater currentNames)
-    {
+    public Duel(List<Player> participants, PlayerHandleUpdater currentNames) {
+        marker = new TurnKeeper(participants);
         this.currentNames = currentNames;
-        Collections.shuffle(participants);
-        for (Player p : participants)
-            this.participants.addFront(p);
-        this.turnMarker = this.participants.iterator();
-        nextPlayer = turnMarker.next();
-        currentPlayer = turnMarker.next();
     }
 
-    public String inputMove(String move)
-    {
-        event = new StringBuilder();
-        return validateMove(move);
+    public boolean inputMove(String move) {
+            eventSequence.clear();
+            return validateMove(move);
     }
 
-
-    public boolean finished()
-    {
-        return participants.size() == 1;
+    public boolean finished() {
+        return marker.finished();
     }
 
-    public Player getCurrentPlayer()
-    {
-        return currentPlayer;
+    public List<Event> getSequence(){
+        return eventSequence;
     }
 
 
-    private String validateMove(String code)
-    {
-        Attack selectedMove = currentPlayer.getSupplies().getAttack(code);
+    public Player getCurrentPlayer() {
+        return marker.current();
+    }
+
+    private boolean validateMove(String code) {
+        Attack selectedMove = marker.current().getSupplies().getAttack(code);
         if (selectedMove == null) {
-            event.append("Error: unknown command.\n");
-            event.append("Type 'list' to show available moves.").append("\n");
-            return event.toString();
+            eventSequence.add(new Event("Error: you do not own a weapon with that code."));
+            eventSequence.add( new Event("Type '!list' to show available moves."));
+            return false;
         }
         return verifyAttack(selectedMove);
     }
-    private String verifyAttack(Attack move)
-    {
-        PlayerCondition frozen = getCondition(currentPlayer, Effect.FREEZE);
-        if ((frozen != null) && (move.getType() == CombatStyle.MELEE))
-        {
-            event.append("You cannot use melee style attacks while frozen.");
-            event.append(String.format("The freeze will last for %d more turns.", frozen.getDuration()));
-            return event.toString();
+
+    private boolean verifyAttack(Attack move) {
+        PlayerCondition frozen = getCondition(marker.current(), Effect.FREEZE);
+        if ((frozen != null) && (move.getType() == CombatStyle.MELEE)) {
+            eventSequence.add(new Event("You cannot use melee style attacks while frozen."));
+            eventSequence.add(new Event(String.format("The freeze will last for %d more turns.", frozen.getDuration())));
+            return false;
         }
         return verifySpec(move);
     }
 
-    private String verifySpec(Attack move) {
+    private boolean verifySpec(Attack move) {
         int requiredSpec = move.getSpec();
-        int currentSpec = currentPlayer.getStatus().getSpec();
-        if (requiredSpec > currentSpec)
-        {
-            event.append(String.format("Insufficient special. %s requires %d spec.", move.getCode()[0], move.getSpec()));
-            return event.toString();
-        }
-        else{
-            currentPlayer.getStatus().removeSpec(requiredSpec);
+        int currentSpec = marker.current().getStatus().getSpec();
+        if (requiredSpec > currentSpec) {
+            eventSequence.add(new Event(String.format("Insufficient special. %s requires %d spec.", move.getCode()[0], move.getSpec())));
+            return false;
+        } else {
+           marker.current().getStatus().removeSpec(requiredSpec);
             return calculateDamage(move);
         }
     }
 
-    private String calculateDamage(Attack move)
-    {
-        AttackResult damage = move.calculateAttack(currentPlayer, nextPlayer);
+    private boolean calculateDamage(Attack move) {
+        AttackResult damage = move.calculateAttack(marker.current(), marker.peek());
         boolean conditionLanded = move.conditionLanded();
         return checkForPlayerHeal(move, damage, conditionLanded);
     }
 
-    private String checkForPlayerHeal(Attack move, AttackResult result, boolean condition)
-    {
-        if (condition && (move.getCondition().getType() == Effect.HEAL))
-        {
-            int heal = (int) ((double)result.getRawDamage() * move.getCondition().getPercentage());
-            currentPlayer.getStatus().applyHeal(heal);
-            event.append(String.format("%s healed for %d", currentNames.getHandle(currentPlayer), heal));
+    private boolean checkForPlayerHeal(Attack move, AttackResult result, boolean condition) {
+        if (condition && (move.getCondition().getType() == Effect.HEAL)) {
+            int heal = (int) ( result.getRawDamage() * move.getCondition().getPercentage());
+            int before = marker.current().getStatus().getHealth();
+            marker.current().getStatus().applyHeal(heal);
+            int after = marker.current().getStatus().getHealth();
+            eventSequence.add(new Event("%s healed for %s.", currentNames.getHandle(marker.current()), String.valueOf(after - before)));
         }
-        return applyDamage(move, result, condition);
+        return applyDamage(move, result);
     }
 
-    private String applyDamage(Attack move, AttackResult result, boolean condition) {
+    private boolean applyDamage(Attack move, AttackResult result) {
         int damage = result.getRawDamage();
         //#TODO generate random message code
-        event.append(String.format(move.getMessage()[0], currentNames.getHandle(currentPlayer) , result.getDamageParticles())).append("\n");
-        nextPlayer.getStatus().applyDamage(damage);
+        eventSequence.add( new Event(move.getMessage()[0], currentNames.getHandle(marker.current()), result.getDamageParticles()));
+        marker.peek().getStatus().applyDamage(damage);
 
-        if (verifyDeath(nextPlayer)) {
-            turnMarker.remove();
-            return event.toString();
-        }
-        else {
+        if (verifyDeath(marker.peek())) {
+            marker.remove(marker.peek());
+            return true;
+        } else {
             return checkForVenge(move, result);
         }
     }
 
-    private String checkForVenge(Attack move, AttackResult result) {
-        PlayerCondition venge = getCondition(nextPlayer, Effect.VENGEANCE);
-        if (venge != null)
-        {
-            int reflect = (int)((double)result.getRawDamage() * venge.getPercentage());
-            currentPlayer.getStatus().applyDamage(reflect);
-            event.append(String.format("%s was struck by venge and took %d damage.%n", "stub", currentNames.getHandle(currentPlayer), reflect));
+    private boolean checkForVenge(Attack move, AttackResult result) {
+        PlayerCondition venge = getCondition(marker.peek(), Effect.VENGEANCE);
+        if (venge != null) {
+            int reflect = (int) ((double) result.getRawDamage() * venge.getPercentage());
+            marker.current().getStatus().applyDamage(reflect);
+            eventSequence.add( new Event("%s was struck by venge and took %s damage.", currentNames.getHandle(marker.current()), String.valueOf(reflect)));
             venge.tick();
-            if (verifyDeath(currentPlayer))
-            {
-                turnMarker.remove();
-                return event.toString();
+            if (verifyDeath(marker.current())) {
+                marker.remove(marker.current());
+                return true;
             }
         }
         return checkForGenericConditions(move);
     }
 
-    private String checkForGenericConditions(Attack move) {
-        String otherName = currentNames.getHandle(nextPlayer);
-        for (PlayerCondition condition : nextPlayer.getStatus().getPlayerPlayerConditions()) {
+    private boolean checkForGenericConditions(Attack move) {
+        String otherName = currentNames.getHandle(marker.peek());
+        //#TODO use iterator
+        for (PlayerCondition condition : marker.peek().getStatus().getPlayerPlayerConditions()) {
             switch (condition.getType()) {
                 case POISON:
                     int poisonDamage = 6;
-                    nextPlayer.getStatus().applyDamage(poisonDamage);
+                    marker.peek().getStatus().applyDamage(poisonDamage);
                     //#TODO implement class for handling conditions/reading values
-                    event.append(String.format("%s is poisoned and took %d damage.%n", otherName, poisonDamage));
+                    eventSequence.add(new Event("%s is poisoned and took %s damage.", otherName, String.valueOf(poisonDamage)));
                     break;
 
                 case VENOM:
                     int venomDamage = 12;
-                    nextPlayer.getStatus().applyDamage(venomDamage);
-                    event.append(String.format("Player took %d damage from venom.%n", otherName, venomDamage));
+                    marker.peek().getStatus().applyDamage(venomDamage);
+                    eventSequence.add(new Event("Player took %s damage from venom.", otherName, String.valueOf(venomDamage)));
                     break;
+                case HEAL:
+                    marker.current().getStatus().getPlayerPlayerConditions().remove(condition);
+                    continue;
             }
             condition.tick();
         }
-        if (verifyDeath(nextPlayer))
-        {
-            turnMarker.remove();
-            return event.toString();
-        }
-        else {
+        if (verifyDeath(marker.peek())) {
+            marker.remove(marker.peek());
+            return true;
+        } else {
             return applyCondition(move);
         }
     }
 
-    private String applyCondition(Attack move) {
+    private boolean applyCondition(Attack move) {
         WeaponCondition condition = move.getCondition();
 
-        if (move.conditionLanded() && (getCondition(nextPlayer, condition.getType()) == null))
-        {
-                PlayerCondition newCondition = new PlayerCondition(condition.getType(), condition.getDuration(),
-                        condition.getPercentage(), condition.getStrength());
-                String nextName = currentNames.getHandle(nextPlayer);
-                switch (condition.getType()) {
-                    case VENOM:
-                        event.append(nextName).append(" was venomed!\n");
-                        break;
-                    case POISON:
-                        event.append(nextName).append(" was poisoned!\n");
-                }
-                nextPlayer.getStatus().getPlayerPlayerConditions().add(newCondition);
+        if (move.conditionLanded() && (getCondition(marker.peek(), condition.getType()) == null)) {
+            PlayerCondition newCondition = new PlayerCondition(condition.getType(), condition.getDuration(),
+                    condition.getPercentage(), condition.getStrength());
+            String nextName = currentNames.getHandle(marker.peek());
+            switch (condition.getType()) {
+                case VENOM:
+                    eventSequence.add(new Event("%s was venomed!%n", nextName));
+                    break;
+                case POISON:
+                    eventSequence.add(new Event("%s was poisoned!%n", nextName));
+                    break;
+                case FREEZE:
+                    eventSequence.add(new Event("%s was frozen for %s turn(s)!%n", nextName, String.valueOf(condition.getDuration())));
             }
+            marker.peek().getStatus().getPlayerPlayerConditions().add(newCondition);
+        }
         removedExpiredConditions();
-        cycleTurn();
-        return event.toString();
+        marker.cycle();
+        return true;
     }
 
     private void removedExpiredConditions() {
-
-        for (int i = 0; i < participants.size(); i++)
+        for (int i = 0; i < marker.remaining(); i++)
         {
-            turnMarker.next().getStatus().getPlayerPlayerConditions().removeIf(PlayerCondition::expired);
+            List<PlayerCondition> conditions = marker.cycle().getStatus().getPlayerPlayerConditions();
+            String nextName = currentNames.getHandle(marker.peek());
+            for (PlayerCondition effect : conditions)
+            {
+                if (effect.expired()) {
+
+                    switch (effect.getType()) {
+                        case VENOM:
+                            eventSequence.add(new Event("%s is no longer venomed.%n", nextName));
+                            break;
+                        case POISON:
+                            eventSequence.add(new Event("%s is no longer poisoned.%n", nextName));
+                            break;
+                        case FREEZE:
+                            eventSequence.add(new Event("%s is now unfrozen.%n", nextName));
+                    }
+                    conditions.remove(effect);
+                }
+            }
         }
     }
 
     //#TODO optimize
-    private boolean verifyDeath(Player player)
-    {
-        if (player.getStatus().getHealth() == 0)
-        {
-            event.append(currentNames.getHandle(player)).append(" died!\n");
+    private boolean verifyDeath(Player player) {
+        if (player.getStatus().getHealth() == 0) {
+            eventSequence.add(new Event("%s died!\n", currentNames.getHandle(player)));
+            marker.current().getStatus().refresh();
+            marker.peek().getStatus().refresh();
             return true;
-        }
-        else {
+        } else {
             return false;
         }
     }
+    public List<DuelStatus> getStatus() {
+        List<DuelStatus> status = new ArrayList<>();
+        Player current = marker.current();
 
-    private void cycleTurn()
-    {
-        nextPlayer = currentPlayer;
-        currentPlayer = turnMarker.next();
-    }
-
-    public String getStatus()
-    {
-        return String.format("%s%n%s", getPlayerStatus(currentPlayer), getPlayerStatus(nextPlayer));
-    }
-
-    private String getPlayerStatus(Player player)
-    {
-        //        for (PlayerCondition condition: player.getStatus().getPlayerPlayerConditions())
-//        {
-//           // sb.append(String.format("Condition: %s Duration: %d", condition.getType().name(), condition.getDuration()));
-//        }
-        String status = String.format("%s, health: %d, spec: %d", currentNames.
-                getHandle(player), player.getStatus().getHealth(), player.getStatus().getSpec());
+        for (int i = 0; i < marker.remaining(); i++) {
+            String effectiveName = currentNames.getHandle(current);
+            PlayerStatus currentStatus = current.getStatus();
+            status.add(new DuelStatus(effectiveName, currentStatus.getHealth(), currentStatus.getSpec()));
+            current = marker.cycle();
+        }
         return status;
     }
 
-    private PlayerCondition getCondition(Player selected, Effect type)
-    {
-        for (PlayerCondition condition : selected.getStatus().getPlayerPlayerConditions())
-        {
+    private PlayerCondition getCondition(Player selected, Effect type) {
+        for (PlayerCondition condition : selected.getStatus().getPlayerPlayerConditions()) {
             if (condition.getType() == type)
                 return condition;
         }

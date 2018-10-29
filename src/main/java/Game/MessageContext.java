@@ -3,8 +3,9 @@ package Game;
 import Game.Battle.Player;
 
 public class MessageContext {
-    private Player author;
-    private String message;
+
+    private final Player author;
+    private final String message;
 
     public MessageContext(Player author, String message) {
         this.author = author;
