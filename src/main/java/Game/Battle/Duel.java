@@ -33,6 +33,14 @@ public class Duel {
         return marker.finished();
     }
 
+    public void finish()
+    {
+        for (int i = 0; i < marker.remaining(); i++)
+        {
+            marker.cycle().getStatus().refresh();
+        }
+    }
+
     public List<Event> getSequence(){
         return eventSequence;
     }
@@ -56,7 +64,7 @@ public class Duel {
         PlayerCondition frozen = getCondition(marker.current(), Effect.FREEZE);
         if ((frozen != null) && (move.getType() == CombatStyle.MELEE)) {
             eventSequence.add(new Event("You cannot use melee style attacks while frozen."));
-            eventSequence.add(new Event(String.format("The freeze will last for %d more turns.", frozen.getDuration())));
+            eventSequence.add(new Event(String.format("The freeze will last for %d more turn(s).", frozen.getDuration())));
             return false;
         }
         return verifySpec(move);
@@ -93,6 +101,7 @@ public class Duel {
 
     private boolean applyDamage(Attack move, AttackResult result) {
         int damage = result.getRawDamage();
+
         //#TODO generate random message code
         eventSequence.add( new Event(move.getMessage()[0], currentNames.getHandle(marker.current()), result.getDamageParticles()));
         marker.peek().getStatus().applyDamage(damage);
@@ -122,13 +131,12 @@ public class Duel {
 
     private boolean checkForGenericConditions(Attack move) {
         String otherName = currentNames.getHandle(marker.peek());
-        //#TODO use iterator
+
         for (PlayerCondition condition : marker.peek().getStatus().getPlayerPlayerConditions()) {
             switch (condition.getType()) {
                 case POISON:
                     int poisonDamage = 6;
                     marker.peek().getStatus().applyDamage(poisonDamage);
-                    //#TODO implement class for handling conditions/reading values
                     eventSequence.add(new Event("%s is poisoned and took %s damage.", otherName, String.valueOf(poisonDamage)));
                     break;
 
@@ -178,10 +186,11 @@ public class Duel {
     private void removedExpiredConditions() {
         for (int i = 0; i < marker.remaining(); i++)
         {
-            List<PlayerCondition> conditions = marker.cycle().getStatus().getPlayerPlayerConditions();
-            String nextName = currentNames.getHandle(marker.peek());
-            for (PlayerCondition effect : conditions)
+            Iterator<PlayerCondition> bookmark = marker.cycle().getStatus().getPlayerPlayerConditions().iterator();
+            String nextName = currentNames.getHandle(marker.current());
+            while (bookmark.hasNext())
             {
+                PlayerCondition effect = bookmark.next();
                 if (effect.expired()) {
 
                     switch (effect.getType()) {
@@ -194,13 +203,12 @@ public class Duel {
                         case FREEZE:
                             eventSequence.add(new Event("%s is now unfrozen.%n", nextName));
                     }
-                    conditions.remove(effect);
+                    bookmark.remove();
                 }
             }
         }
     }
 
-    //#TODO optimize
     private boolean verifyDeath(Player player) {
         if (player.getStatus().getHealth() == 0) {
             eventSequence.add(new Event("%s died!\n", currentNames.getHandle(player)));

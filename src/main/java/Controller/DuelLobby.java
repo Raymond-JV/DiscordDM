@@ -56,6 +56,7 @@ public class DuelLobby {
     }
 
     public void clearWaitListAndSession(MessageChannel room) {
+        this.getSession(room);
         this.clearWaitList(room);
         this.clearSession(room);
     }

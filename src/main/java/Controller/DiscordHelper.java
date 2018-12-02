@@ -4,11 +4,13 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public class DiscordHelper {
 
+
+    private static String prefix = "\\.";
+
     public String parseInput(MessageReceivedEvent event) {
         if (event.getAuthor().isBot())
             return null;
-
-        String input[] = event.getMessage().getContentDisplay().split("!");
+        String input[] = event.getMessage().getContentDisplay().split(prefix);
         if (input.length != 2)
             return null;
 

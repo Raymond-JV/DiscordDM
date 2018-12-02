@@ -22,7 +22,7 @@ public class Attack {
     private final int numHits;
     private AttackFormula damageStrategy;
 
-    //parsed automatically using gson
+    //parsed automatically using Gson
     public Attack(CombatStyle type, WeaponCondition condition, int maxHit, int spec, double accuracy, String[] message, String[] code, int numHits) {
         this.type = type;
         this.condition = condition;

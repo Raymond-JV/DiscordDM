@@ -13,9 +13,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-public class DuelClient {
+public class DiscordDuelClient {
 
-    private final static Logger logger = LogManager.getLogger(DuelClient.class);
+    private final static Logger logger = LogManager.getLogger(DiscordDuelClient.class);
     private static String tokenFile = "token.txt";
     private static String itemData = "ItemStats.json";
 
@@ -24,7 +24,7 @@ public class DuelClient {
 
         JDA client = null;
         try {
-            InputStream in = DuelClient.class.getClassLoader().getResourceAsStream(tokenFile);
+            InputStream in = DiscordDuelClient.class.getClassLoader().getResourceAsStream(tokenFile);
             String token = new BufferedReader(new InputStreamReader(in)).readLine();
             client = new JDABuilder(token).build();
         } catch (LoginException e) {
@@ -44,8 +44,8 @@ public class DuelClient {
         PlayerSpawner spawner = new PlayerSpawner(parser.readWeapons());
         PlayerStatusViewer statusViewer = new PlayerStatusViewer(new StatusPictureTransformer());
 
-        client.addEventListener(new DuelBattleListener(lobby, statusViewer));
-        client.addEventListener(new DuelListener(lobby, spawner));
+        BattleSessions sessions = new BattleSessions(lobby, statusViewer);
+        client.addEventListener(new DuelListener(lobby, spawner, statusViewer, sessions));
 
     }
 }

@@ -10,6 +10,10 @@ public final class BasicFormula implements AttackFormula {
     {
         this.numHits = numHits;
     }
+    public BasicFormula()
+    {
+        this(1);
+    }
 
     public AttackResult calculateAttack(Player user, Player other, int minHit, int maxHit, double accuracy) {
 

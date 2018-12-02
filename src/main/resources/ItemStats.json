@@ -1,6 +1,27 @@
 {
   "items": {
+
     "weapons": [
+      {
+        "name": "Dharoks",
+        "value": 30000000,
+        "attack": [
+          {
+            "code": [
+              "dh",
+              "dh axe",
+              "dharoks"
+            ],
+            "maxHit": 92,
+            "spec": 0,
+            "accuracy": 0.75,
+            "type": "MELEE",
+            "message": [
+              "%s whacks a %s."
+            ]
+          }
+        ]
+      },
       {
         "name": "Saradomin Godsword",
         "value": 30000000,
@@ -14,7 +35,12 @@
             "spec": 50,
             "accuracy": 0.8,
             "type": "MELEE",
-            "condition" : {"type": "HEAL", "chance": 1.00, "duration":2, "percentage": 0.7},
+            "condition": {
+              "type": "HEAL",
+              "chance": 1.00,
+              "duration": 2,
+              "percentage": 0.7
+            },
             "message": [
               "%s activates healing blade and crushes for %s damage."
             ]
@@ -31,12 +57,16 @@
               "dds go",
               "dragon dagger"
             ],
-            "maxHit": 44,
+            "maxHit": 41,
             "spec": 25,
             "accuracy": 0.80,
             "numHits": 2,
             "type": "MELEE",
-            "condition" : {"type": "POISON", "chance": 0.75, "duration": 2},
+            "condition": {
+              "type": "POISON",
+              "chance": 0.75,
+              "duration": 2
+            },
             "message": [
               "DDS GO!. %s dealt %s damage."
             ]
@@ -57,9 +87,14 @@
             "spec": 0,
             "accuracy": 0.9,
             "type": "MAGIC",
-            "condition" : {"type": "HEAL", "chance": 1.00, "duration": 1, "percentage": 0.5},
+            "condition": {
+              "type": "HEAL",
+              "chance": 1.00,
+              "duration": 1,
+              "percentage": 0.5
+            },
             "message": [
-              "%s is a vampire and sucks blood for %s damage."
+              "%s drains for %s damage."
             ]
           }
         ]
@@ -77,7 +112,12 @@
             "spec": 0,
             "accuracy": 0.8,
             "type": "MELEE",
-            "condition" : {"type": "HEAL", "chance": 0.25, "duration": 1, "percentage": 1.00},
+            "condition": {
+              "type": "HEAL",
+              "chance": 0.25,
+              "duration": 1,
+              "percentage": 1.00
+            },
             "message": [
               "%s is a Guthans prod and pokes for %s damage."
             ]
@@ -98,9 +138,13 @@
             "spec": 0,
             "accuracy": 0.85,
             "type": "MAGIC",
-            "condition" : {"type": "FREEZE", "chance": 1.00, "duration": 2},
+            "condition": {
+              "type": "FREEZE",
+              "chance": 1.00,
+              "duration": 2
+            },
             "message": [
-              "%s drizzles ice cubes for %s damage.",
+              "The winter is coming... %s summons a canadian snowstorm for %s damage.",
               "%s lol wat %s."
             ]
           }
@@ -118,7 +162,7 @@
             ],
             "maxHit": 76,
             "spec": 50,
-            "accuracy": 0.8,
+            "accuracy": 0.85,
             "type": "MELEE",
             "message": [
               "%s whirls their armadyl godsword and slashes for %s."
@@ -139,7 +183,7 @@
             "maxHit": 42,
             "spec": 100,
             "accuracy": 0.6,
-            "numHits" : 3,
+            "numHits": 3,
             "type": "MELEE",
             "message": [
               "%s is such a prod. ROCK SMASH %s."
@@ -159,7 +203,7 @@
             ],
             "maxHit": 42,
             "spec": 0,
-            "accuracy": 0.6,
+            "accuracy": 0.75,
             "type": "MELEE",
             "message": [
               "%s flicks the whip for %s."
@@ -179,9 +223,13 @@
             ],
             "maxHit": 45,
             "spec": 0,
-            "accuracy": 0.75,
+            "accuracy": 0.8,
             "type": "MELEE",
-            "condition" : {"type": "POISON", "chance": 0.75, "duration": 4},
+            "condition": {
+              "type": "POISON",
+              "chance": 0.75,
+              "duration": 4
+            },
             "message": [
               "%s flicks the tentacle for %s."
             ]
@@ -198,8 +246,8 @@
               "dark bow"
             ],
             "maxHit": 48,
-            "spec": 55,
-            "accuracy": 0.7,
+            "spec": 75,
+            "accuracy": 1.00,
             "type": "RANGE",
             "message": [
               "%s fires twin dragons for %s."

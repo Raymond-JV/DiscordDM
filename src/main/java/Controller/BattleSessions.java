@@ -15,19 +15,18 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-public class DuelBattleListener extends ListenerAdapter {
+public class BattleSessions {
 
     private final static Logger logger = LogManager.getLogger(DuelLobby.class);
     private final DuelLobby lobby;
     private final PlayerStatusViewer viewer;
 
-    public DuelBattleListener(DuelLobby lobby, PlayerStatusViewer viewer) {
+    public BattleSessions(DuelLobby lobby, PlayerStatusViewer viewer) {
         this.lobby = lobby;
         this.viewer = viewer;
     }
 
-    @Override
-    public void onMessageReceived(MessageReceivedEvent event) {
+    public void applyCommand(MessageReceivedEvent event) {
 
         if (event.getAuthor().isBot())
             return;

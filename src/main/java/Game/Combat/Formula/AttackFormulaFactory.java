@@ -13,6 +13,9 @@ public class AttackFormulaFactory {
             case "dclaws":
             case "dragon claws":
                 return new DragonClawFormula();
+            case "dh":
+            case "dharoks":
+                return new DhFormula();
             default:
                 return new BasicFormula(Math.max(1, attack.getNumHits()));
         }

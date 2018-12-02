@@ -10,7 +10,7 @@ public class DuelArena {
     private PlayerHandleUpdater effectiveNames;
     private Duel duel;
     private List<Event> eventSequence = new ArrayList<>();
-    boolean lastMoveValid = false;
+    private boolean lastMoveValid = false;
 
     public DuelArena(PlayerHandleUpdater effectiveNames) {
         this.effectiveNames = effectiveNames;
@@ -48,6 +48,11 @@ public class DuelArena {
     public boolean lastMoveValid()
     {
         return this.lastMoveValid;
+    }
+
+    public void finishDuel()
+    {
+        this.duel.finish();
     }
 
     public List<DuelStatus> getStatus()
