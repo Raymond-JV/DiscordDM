@@ -2,7 +2,7 @@
 
 A runescape deathmatch simulator.  
 This program was inspired by the popular iDM bot from swiftirc.  
-JDA was used as a wrapper to utilize the Discord API.
+JDA was used as a wrapper to utilize the Discord API.  
 Item names and values were imported from RSBuddy using JSON.
 
 &nbsp;
