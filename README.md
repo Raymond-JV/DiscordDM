@@ -22,12 +22,12 @@ Item names and values were imported from RSBuddy using JSON.
 &nbsp;
 
 ![dds](https://user-images.githubusercontent.com/23642921/61591021-c0761c00-ab75-11e9-86d7-eb9d4048638a.PNG)
-#### When poisoned, damage is dealt at the end of the damage calculation and lasts 4 turns.
+#### Poison lasts 4 turns and deals extra damage to the inflicted at the end of the damage calculation.
 
 &nbsp;
 
 ![guthans](https://user-images.githubusercontent.com/23642921/61591022-c10eb280-ab75-11e9-8055-cb629dda14fb.PNG)
-#### Attacks with the heal property regen the health of the attacker 
+#### Attacks with the heal property regen the health of the attacker.
 
 &nbsp;
 
